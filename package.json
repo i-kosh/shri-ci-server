@@ -26,6 +26,7 @@
     "dev": "cross-env NODE_ENV=development nodemon",
     "build": "shx rm -rf dist && tsc --build tsconfig.prod.json",
     "lint": "eslint src/**/*.{js,ts}",
+    "test": "tsc --pretty --noEmit --project tsconfig.prod.json",
     "prepare": "husky install"
   },
   "dependencies": {
