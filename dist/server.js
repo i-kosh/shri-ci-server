@@ -8,10 +8,12 @@ dotenv_1.config();
 const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
+const routes_1 = __importDefault(require("./routes"));
 const app = express_1.default();
 app.use(cors_1.default());
 app.use(morgan_1.default(process.env.NODE_ENV !== 'production' ? 'dev' : 'combined'));
 app.use(express_1.default.json());
+app.use('/api', routes_1.default);
 function startServer() {
     console.info(`🚀 Starting server...`);
     app.listen(process.env.PORT, () => {
