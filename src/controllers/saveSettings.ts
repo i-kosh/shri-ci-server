@@ -3,12 +3,6 @@ import { RequestHandler } from 'express'
 
 const handler: RequestHandler = async (req, res, next) => {
   const response = await settingsModel.setSettings({
-    // data: {
-    //   buildCommand: req.body.buildCommand,
-    //   mainBranch: req.body.mainBranch,
-    //   period: req.body.period,
-    //   repoName: req.body.repoName,
-    // },
     data: req.body,
   })
 
