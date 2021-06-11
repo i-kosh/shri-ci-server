@@ -1,17 +1,18 @@
 import settingsModel from '../models/Settings'
 import { RequestHandler } from 'express'
+import { repoManager } from '../models/Repo'
 
 const handler: RequestHandler = async (req, res, next) => {
   const response = await settingsModel.setSettings({
     data: req.body,
   })
 
-  // TODO: добавить получение списка коммитов и все все
-
   if (settingsModel.isError(response)) {
     next(response)
   } else {
     res.status(200).json()
+
+    repoManager.updRepo(req.body.repoName)
   }
 }
 
