@@ -1,13 +1,15 @@
 import cfg from './config'
 import express from 'express'
 import apiRouter from './routes'
-import { beforeRoutes } from './middlewares'
-import finalErrorHandler from './middlewares/finalErrorHandler'
+import { applyPreMiddlewares, applyFinalMiddlewares } from './middlewares'
 
-const app = express().use(beforeRoutes)
+const app = express()
+
+applyPreMiddlewares(app)
+
 app.use('/api', apiRouter)
 
-app.use(finalErrorHandler)
+applyFinalMiddlewares(app)
 
 function startServer() {
   console.info(`🚀 Starting server...`)
