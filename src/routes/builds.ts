@@ -1,20 +1,17 @@
 import { Router } from 'express'
 import getBuildList from '../controllers/getBuildList'
+import getBuild from '../controllers/getBuild'
+import getBuildLogs from '../controllers/getBuildLogs'
+import queueBuild from '../controllers/queueBuild'
 
 const router = Router()
 
 router.get('/', getBuildList)
 
-router.get('/:buildId', (req, res, next) => {
-  res.json({ lol: 'получение информации о конкретной сборке' })
-})
+router.get('/:buildId', getBuild)
 
-router.post('/:commitHash', (req, res, next) => {
-  res.json({ lol: 'добавление сборки в очередь' })
-})
+router.post('/:commitHash', queueBuild)
 
-router.get('/:buildId/logs', (req, res, next) => {
-  res.json({ lol: 'получение логов билда (сплошной текст)' })
-})
+router.get('/:buildId/logs', getBuildLogs)
 
 export default router
