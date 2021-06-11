@@ -13,7 +13,7 @@ function startServer() {
   console.info(`🚀 Starting server...`)
 
   app.listen(cfg.PORT, () => {
-    console.info(`✔  Server started...`)
+    console.info(`✔  Server started on port ${cfg.PORT}...`)
   })
 }
 
