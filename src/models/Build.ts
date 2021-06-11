@@ -18,7 +18,7 @@ import {
 } from './types'
 import config from '../config'
 
-class BuildModel extends DB {
+export class BuildModel extends DB {
   public async getBuildList(
     cfg?: GetBuildListConfig
   ): Promise<AxiosResponse<GetBuildListResponse> | DBError> {

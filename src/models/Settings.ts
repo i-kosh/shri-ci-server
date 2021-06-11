@@ -8,7 +8,7 @@ import {
 } from './types'
 import config from '../config'
 
-class SettingsModel extends DB {
+export class SettingsModel extends DB {
   public async setSettings(
     cfg: SetSettingsConfig
   ): Promise<AxiosResponse<SetSettingsResponse> | DBError> {
