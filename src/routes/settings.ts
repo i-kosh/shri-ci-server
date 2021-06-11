@@ -1,13 +1,11 @@
 import { Router } from 'express'
+import getSettings from '../controllers/getSettings'
+import saveSettings from '../controllers/saveSettings'
 
 const router = Router()
 
-router.get('/', (req, res, next) => {
-  res.json({ lol: 'получение сохраненных настроек' })
-})
+router.get('/', getSettings)
 
-router.post('/', (req, res, next) => {
-  res.json({ lol: 'cохранение настроек' })
-})
+router.post('/', saveSettings)
 
 export default router
