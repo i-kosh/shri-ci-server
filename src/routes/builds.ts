@@ -1,10 +1,9 @@
 import { Router } from 'express'
+import getBuildList from '../controllers/getBuildList'
 
 const router = Router()
 
-router.get('/', (req, res, next) => {
-  res.json({ lol: 'получение списка сборок' })
-})
+router.get('/', getBuildList)
 
 router.get('/:buildId', (req, res, next) => {
   res.json({ lol: 'получение информации о конкретной сборке' })
