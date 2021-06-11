@@ -1,16 +1,9 @@
 import cfg from './config'
-import cors from 'cors'
 import express from 'express'
-import morgan from 'morgan'
-
 import apiRouter from './routes'
+import middlewares from './middlewares'
 
-const app = express()
-
-app.use(cors())
-app.use(morgan(cfg.NODE_ENV !== 'production' ? 'dev' : 'combined'))
-app.use(express.json())
-
+const app = express().use(middlewares)
 app.use('/api', apiRouter)
 
 function startServer() {
