@@ -2,7 +2,7 @@ import cfg from './config'
 import express from 'express'
 import apiRouter from './routes'
 import { applyPreMiddlewares, applyFinalMiddlewares } from './middlewares'
-import { repoManager } from './models/Repo'
+import { repoManager } from './Repo'
 import settingsModel from './models/Settings'
 
 const app = express()

@@ -1,6 +1,6 @@
 import settingsModel from '../models/Settings'
 import { RequestHandler } from 'express'
-import { repoManager } from '../models/Repo'
+import { repoManager } from '../Repo'
 
 const handler: RequestHandler = async (req, res, next) => {
   const response = await settingsModel.setSettings({
