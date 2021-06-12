@@ -3,6 +3,7 @@ import getBuildList from '../controllers/getBuildList'
 import getBuild from '../controllers/getBuild'
 import getBuildLogs from '../controllers/getBuildLogs'
 import queueBuild from '../controllers/queueBuild'
+import { addCache } from '../middlewares/cache'
 
 const router = Router()
 
@@ -12,6 +13,6 @@ router.get('/:buildId', getBuild)
 
 router.post('/:commitHash', queueBuild)
 
-router.get('/:buildId/logs', getBuildLogs)
+router.get('/:buildId/logs', addCache(getBuildLogs))
 
 export default router
