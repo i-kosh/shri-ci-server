@@ -19,7 +19,7 @@ const handler: ReqHandler = async (req, res, next) => {
   if (buildModel.isError(response)) {
     next(response)
   } else {
-    res.json(response.data.data)
+    res.json(response.data)
   }
 }
 

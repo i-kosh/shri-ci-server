@@ -97,7 +97,7 @@ export interface SettingsEntity {
 }
 
 export type GetBuildListResponse = DBresponse<BuildEntity[]>
-export type GetBuildLogResponse = DBresponse<Record<string, unknown>>
+export type GetBuildLogResponse = string
 export type GetBuildDetailsResponse = DBresponse<BuildEntity>
 export type QueueBuildResponse = DBresponse<{
   buildNumber: number
