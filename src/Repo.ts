@@ -87,6 +87,20 @@ export class Repo {
     })
   }
 
+  private async checkout(to: string): Promise<boolean> {
+    try {
+      if (await this.waitRepoReady()) {
+        await execFileAsync('git', [this.gitDirFlag, 'checkout', to])
+        return true
+      }
+
+      throw new Error('Checkout error')
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  }
+
   private async cloneRepo(): Promise<void> {
     if (this.failed) return
     if (await this.isGitDir(this.fullPath)) {
@@ -142,6 +156,40 @@ export class Repo {
       return null
     }
   }
+
+  public async runBuild(commitHash: string): Promise<{
+    log: string
+    success: boolean
+  }> {
+    let log = ''
+    let success = false
+
+    try {
+      if (!(await this.waitRepoReady())) {
+        throw new Error('Repo error')
+      }
+      if (!(await this.checkout(commitHash))) {
+        throw new Error('git checkout error')
+      }
+
+      const { stderr, stdout } = await execFileAsync(
+        `${this.params.buildCommand}`,
+        { cwd: this.fullPath, shell: true }
+      )
+
+      log = `${stdout}\n${stderr}`
+
+      success = true
+    } catch (error) {
+      log = `${log}\n${error}`
+      success = false
+    }
+
+    return {
+      log,
+      success,
+    }
+  }
 }
 
 class SingleRepoManager {
@@ -159,6 +207,28 @@ class SingleRepoManager {
 
   getRepo(): Repo | null {
     return this.repoInstanse ? this.repoInstanse : null
+  }
+
+  getRepoAsync(): Promise<Repo> {
+    const maxTimeOut = 1000 * 60 * 1
+    let fullTimeout = 0
+
+    return new Promise((resolve) => {
+      const timeout = setInterval(() => {
+        const repo = this.getRepo()
+
+        if (repo) {
+          clearTimeout(timeout)
+          resolve(repo)
+        } else {
+          fullTimeout = fullTimeout + 100
+        }
+
+        if (fullTimeout >= maxTimeOut) {
+          throw new Error('Repo initialization timeout (1min)')
+        }
+      }, 100)
+    })
   }
 }
 
