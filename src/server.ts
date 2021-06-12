@@ -18,7 +18,10 @@ async function startServer() {
 
   const settings = await settingsModel.getSettings()
   if (!settingsModel.isError(settings) && settings.data.data?.repoName) {
-    repoManager.updRepo(settings.data.data.repoName)
+    repoManager.updRepo({
+      repoLink: settings.data.data.repoName,
+      mainBranch: settings.data.data.mainBranch,
+    })
     console.info('✔ Repo settings restored...')
   }
 

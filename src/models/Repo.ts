@@ -13,6 +13,11 @@ export interface CommitInfo {
   message: string
 }
 
+export interface RepoParams {
+  repoLink: string
+  mainBranch: string
+}
+
 export class RepoError extends Error {
   constructor(msg: string) {
     super(msg)
@@ -25,10 +30,13 @@ export class Repo {
   private fullPath: string
   private folderName: string
 
-  constructor(private repoLink: string) {
-    this.failed = !this.isGitLink(repoLink)
+  constructor(public readonly params: RepoParams) {
+    this.failed = !this.isGitLink(params.repoLink)
     this.exist = false
-    this.folderName = uuidv5(repoLink, '5235fde0-caf5-11eb-878d-7303d56e8e0a')
+    this.folderName = uuidv5(
+      params.repoLink,
+      '5235fde0-caf5-11eb-878d-7303d56e8e0a'
+    )
     this.fullPath = join(tmpdir(), this.folderName)
 
     this.cloneRepo()
@@ -87,7 +95,7 @@ export class Repo {
     }
 
     try {
-      await execFileAsync('git', ['clone', this.repoLink, this.fullPath])
+      await execFileAsync('git', ['clone', this.params.repoLink, this.fullPath])
 
       if (!(await this.isGitDir(this.fullPath))) {
         throw new RepoError('Repository cloning error')
@@ -140,13 +148,13 @@ class SingleRepoManager {
   private repoLink?: string
   private repoInstanse?: Repo
 
-  updRepo(repoLink: string) {
-    if (this.repoLink === repoLink) return
+  updRepo(params: RepoParams) {
+    if (this.repoLink === params.repoLink) return
 
-    this.repoLink = repoLink
-    this.repoInstanse = new Repo(repoLink)
+    this.repoLink = params.repoLink
+    this.repoInstanse = new Repo(params)
 
-    console.info(`New repo ${repoLink}`)
+    console.info(`New repo ${params.repoLink}`)
   }
 
   getRepo(): Repo | null {
