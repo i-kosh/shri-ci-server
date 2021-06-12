@@ -7,6 +7,18 @@ import fs from 'fs/promises'
 
 const execFileAsync = promisify(execFile)
 
+export interface CommitInfo {
+  hash: string
+  author: string
+  message: string
+}
+
+export class RepoError extends Error {
+  constructor(msg: string) {
+    super(msg)
+  }
+}
+
 export class Repo {
   public exist: boolean
   public failed: boolean
@@ -14,12 +26,16 @@ export class Repo {
   private folderName: string
 
   constructor(private repoLink: string) {
-    this.failed = this.isGitLink(repoLink)
+    this.failed = !this.isGitLink(repoLink)
     this.exist = false
     this.folderName = uuidv5(repoLink, '5235fde0-caf5-11eb-878d-7303d56e8e0a')
     this.fullPath = join(tmpdir(), this.folderName)
 
     this.cloneRepo()
+  }
+
+  private get gitDirFlag() {
+    return `--git-dir=${join(this.fullPath, '/.git')}`
   }
 
   private isGitLink(link: string): boolean {
@@ -41,16 +57,40 @@ export class Repo {
     }
   }
 
+  /**
+   * Ждет готовности репозитория (клонирование и проверка)
+   * @returns `true` - репозиторий готов, `false` - ошибка проверки репозитория
+   */
+  private waitRepoReady(): Promise<boolean> {
+    let intervalID: NodeJS.Timeout
+
+    return new Promise((resolve) => {
+      intervalID = setInterval(() => {
+        if (this.failed) {
+          clearInterval(intervalID)
+          return resolve(false)
+        }
+
+        if (this.exist) {
+          clearInterval(intervalID)
+          return resolve(true)
+        }
+      }, 100)
+    })
+  }
+
   private async cloneRepo(): Promise<void> {
     if (this.failed) return
-    if (await this.isGitDir(this.fullPath)) return
+    if (await this.isGitDir(this.fullPath)) {
+      this.exist = true
+      return
+    }
 
     try {
       await execFileAsync('git', ['clone', this.repoLink, this.fullPath])
 
       if (!(await this.isGitDir(this.fullPath))) {
-        this.failed = true
-        throw new Error('Repository cloning error')
+        throw new RepoError('Repository cloning error')
       }
 
       this.exist = true
@@ -58,6 +98,40 @@ export class Repo {
       this.exist = false
       this.failed = true
       console.error(error)
+    }
+  }
+
+  public async getCommitInfo(hash: string): Promise<CommitInfo | null> {
+    const formatString = '%H&%an&%s' // hash&author&message
+    const formatSeparator = '&'
+
+    try {
+      if (!(await this.waitRepoReady())) return null
+
+      const { stdout } = await execFileAsync('git', [
+        this.gitDirFlag,
+        'show',
+        '-s',
+        `--format="${formatString}"`,
+        hash,
+      ])
+
+      const parsed: string[] | undefined = stdout
+        .split('"')[1]
+        ?.split(formatSeparator)
+
+      if (Array.isArray(parsed) && parsed[0] && parsed[1] && parsed[2]) {
+        return {
+          hash: parsed[0],
+          author: parsed[1],
+          message: parsed[2],
+        }
+      }
+
+      throw new RepoError('Error occured while getting commit info')
+    } catch (error) {
+      console.error(error)
+      return null
     }
   }
 }
