@@ -5,8 +5,6 @@ import { promisify } from 'util'
 import { v5 as uuidv5 } from 'uuid'
 import fs from 'fs/promises'
 
-const execFileAsync = promisify(execFile)
-
 export interface CommitInfo {
   hash: string
   author: string
@@ -16,6 +14,7 @@ export interface CommitInfo {
 export interface RepoParams {
   repoLink: string
   mainBranch: string
+  buildCommand: string
 }
 
 export class RepoError extends Error {
@@ -24,10 +23,12 @@ export class RepoError extends Error {
   }
 }
 
+const execFileAsync = promisify(execFile)
+
 export class Repo {
   public exist: boolean
   public failed: boolean
-  private fullPath: string
+  public fullPath: string
   private folderName: string
 
   constructor(public readonly params: RepoParams) {

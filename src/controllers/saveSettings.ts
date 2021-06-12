@@ -12,7 +12,11 @@ const handler: RequestHandler = async (req, res, next) => {
   } else {
     res.status(200).json()
 
-    repoManager.updRepo(req.body.repoName)
+    repoManager.updRepo({
+      repoLink: req.body.repoName,
+      buildCommand: req.body.buildCommand,
+      mainBranch: req.body.mainBranch,
+    })
   }
 }
 
