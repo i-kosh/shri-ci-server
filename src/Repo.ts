@@ -5,6 +5,8 @@ import { promisify } from 'util'
 import { v5 as uuidv5 } from 'uuid'
 import fs from 'fs/promises'
 
+const execFileAsync = promisify(execFile)
+
 export interface CommitInfo {
   hash: string
   author: string
@@ -17,13 +19,16 @@ export interface RepoParams {
   buildCommand: string
 }
 
+export interface RunBuildReturn {
+  log: string
+  success: boolean
+}
+
 export class RepoError extends Error {
   constructor(msg: string) {
     super(msg)
   }
 }
-
-const execFileAsync = promisify(execFile)
 
 export class Repo {
   public exist: boolean
@@ -40,7 +45,7 @@ export class Repo {
     )
     this.fullPath = join(tmpdir(), this.folderName)
 
-    this.cloneRepo()
+    void this.cloneRepo()
   }
 
   private get gitDirFlag() {
@@ -53,66 +58,54 @@ export class Repo {
 
   private async isGitDir(path: string): Promise<boolean> {
     try {
-      const stat = await fs.stat(path)
+      const gtiStat = await fs.stat(join(path, '.git'))
 
-      if (stat.isDirectory() && stat.size > 1) {
-        const dir = await fs.readdir(path)
-        return dir.includes('.git')
+      if (gtiStat.isDirectory() && gtiStat.size > 1) {
+        return true
+      } else {
+        return false
       }
-
-      return false
     } catch (error) {
       return false
     }
   }
 
-  /**
-   * Ждет готовности репозитория (клонирование и проверка)
-   * @returns `true` - репозиторий готов, `false` - ошибка проверки репозитория
-   */
-  private waitRepoReady(): Promise<boolean> {
+  private waitRepoReady(): Promise<void> {
+    const interval = 100
     let intervalID: NodeJS.Timeout
 
     return new Promise((resolve) => {
       intervalID = setInterval(() => {
         if (this.failed) {
           clearInterval(intervalID)
-          return resolve(false)
+          throw new Error('Repo failed')
         }
 
         if (this.exist) {
           clearInterval(intervalID)
-          return resolve(true)
+          return resolve()
         }
-      }, 100)
+      }, interval)
     })
   }
 
-  private async checkout(to: string): Promise<boolean> {
-    try {
-      if (await this.waitRepoReady()) {
-        await execFileAsync('git', [this.gitDirFlag, 'checkout', to])
-        return true
-      }
-
-      throw new Error('Checkout error')
-    } catch (error) {
-      console.log(error)
-      return false
-    }
+  private async checkout(to: string): Promise<void> {
+    await this.waitRepoReady()
+    await execFileAsync('git', [this.gitDirFlag, 'checkout', to])
   }
 
   private async cloneRepo(): Promise<void> {
-    if (this.failed) return
-    if (await this.isGitDir(this.fullPath)) {
-      this.exist = true
-      return
-    }
-
     try {
+      if (this.failed) return
+      if (await this.isGitDir(this.fullPath)) {
+        this.exist = true
+        return
+      }
+
       await execFileAsync('git', ['clone', this.params.repoLink, this.fullPath])
 
-      if (!(await this.isGitDir(this.fullPath))) {
+      const gitDirCloned = await this.isGitDir(this.fullPath)
+      if (!gitDirCloned) {
         throw new RepoError('Repository cloning error')
       }
 
@@ -124,62 +117,49 @@ export class Repo {
     }
   }
 
-  public async getCommitInfo(hash: string): Promise<CommitInfo | null> {
+  public async getCommitInfo(hash: string): Promise<CommitInfo> {
+    await this.waitRepoReady()
     const formatString = '%H&%an&%s' // hash&author&message
     const formatSeparator = '&'
 
-    try {
-      if (!(await this.waitRepoReady())) return null
+    const { stdout } = await execFileAsync('git', [
+      this.gitDirFlag,
+      'show',
+      '-s',
+      `--format="${formatString}"`,
+      hash,
+    ])
 
-      const { stdout } = await execFileAsync('git', [
-        this.gitDirFlag,
-        'show',
-        '-s',
-        `--format="${formatString}"`,
-        hash,
-      ])
+    const parsed: string[] | undefined = stdout
+      .split('"')[1]
+      ?.split(formatSeparator)
 
-      const parsed: string[] | undefined = stdout
-        .split('"')[1]
-        ?.split(formatSeparator)
-
-      if (Array.isArray(parsed) && parsed[0] && parsed[1] && parsed[2]) {
-        return {
-          hash: parsed[0],
-          author: parsed[1],
-          message: parsed[2],
-        }
+    if (Array.isArray(parsed) && parsed[0] && parsed[1] && parsed[2]) {
+      return {
+        hash: parsed[0],
+        author: parsed[1],
+        message: parsed[2],
       }
-
+    } else {
       throw new RepoError('Error occured while getting commit info')
-    } catch (error) {
-      console.error(error)
-      return null
     }
   }
 
-  public async runBuild(commitHash: string): Promise<{
-    log: string
-    success: boolean
-  }> {
+  public async runBuild(commitHash: string): Promise<RunBuildReturn> {
     let log = ''
     let success = false
 
     try {
-      if (!(await this.waitRepoReady())) {
-        throw new Error('Repo error')
-      }
-      if (!(await this.checkout(commitHash))) {
-        throw new Error('git checkout error')
-      }
+      await this.waitRepoReady()
+      await this.checkout(commitHash)
 
+      // TODO: санитизировать buildCommand
       const { stderr, stdout } = await execFileAsync(
         `${this.params.buildCommand}`,
         { cwd: this.fullPath, shell: true }
       )
 
       log = `${stdout}\n${stderr}`
-
       success = true
     } catch (error) {
       log = `${log}\n${error}`
@@ -203,32 +183,30 @@ class SingleRepoManager {
     this.repoLink = params.repoLink
     this.repoInstanse = new Repo(params)
 
-    console.info(`New repo ${params.repoLink}`)
+    console.info(`💨 Changed repo to ${params.repoLink}`)
   }
 
-  getRepo(): Repo | null {
-    return this.repoInstanse ? this.repoInstanse : null
-  }
-
-  getRepoAsync(): Promise<Repo> {
+  public getRepoAsync(): Promise<Repo> {
     const maxTimeOut = 1000 * 60 * 1
+    const interval = 100
     let fullTimeout = 0
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const timeout = setInterval(() => {
-        const repo = this.getRepo()
+        const repo = this.repoInstanse ? this.repoInstanse : null
 
         if (repo) {
           clearTimeout(timeout)
           resolve(repo)
         } else {
-          fullTimeout = fullTimeout + 100
+          fullTimeout = fullTimeout + interval
         }
 
         if (fullTimeout >= maxTimeOut) {
-          throw new Error('Repo initialization timeout (1min)')
+          clearTimeout(timeout)
+          reject(new Error('Repo initialization timeout (1min)'))
         }
-      }, 100)
+      }, interval)
     })
   }
 }

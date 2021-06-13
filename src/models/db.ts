@@ -1,15 +1,5 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import config from '../config'
-
-export class DBError extends Error {
-  public isError: boolean
-
-  constructor(msg: string) {
-    super(msg)
-
-    this.isError = true
-  }
-}
 
 export default class DB {
   protected $axios: AxiosInstance
@@ -22,9 +12,5 @@ export default class DB {
         Authorization: `Bearer ${config.TOKEN}`,
       },
     })
-  }
-
-  public isError(val: AxiosResponse<unknown> | DBError): val is DBError {
-    return val instanceof DBError
   }
 }

@@ -1,5 +1,5 @@
 export interface DBresponse<T = unknown> {
-  data?: T
+  data: T
   errors?: Array<unknown>
 }
 
@@ -29,7 +29,7 @@ export type GetBuildDetailsConfig = DBReqConfig & {
   }
 }
 
-export type QueueBuildCOnfig = DBReqConfig & {
+export type QueueBuildConfig = DBReqConfig & {
   data: {
     authorName: string
     branchName: string

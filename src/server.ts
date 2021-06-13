@@ -6,30 +6,31 @@ import { repoManager } from './Repo'
 import settingsModel from './models/Settings'
 
 const app = express()
-
 applyPreMiddlewares(app)
 
 app.use('/api', apiRouter)
 
 applyFinalMiddlewares(app)
 
-async function startServer() {
+function startServer() {
   console.info(`🚀 Starting server...`)
 
-  const settings = await settingsModel.getSettings()
-
-  if (!settingsModel.isError(settings) && settings.data.data?.repoName) {
-    repoManager.updRepo({
-      repoLink: settings.data.data.repoName,
-      mainBranch: settings.data.data.mainBranch,
-      buildCommand: settings.data.data.buildCommand,
+  settingsModel
+    .getSettings()
+    .then((settings) => {
+      repoManager.updRepo({
+        repoLink: settings.data.data.repoName,
+        mainBranch: settings.data.data.mainBranch,
+        buildCommand: settings.data.data.buildCommand,
+      })
+      console.info('✔  Repo settings restored...')
     })
-    console.info('✔ Repo settings restored...')
-  }
+    .catch((err) => {
+      console.warn(err)
+    })
 
   app.listen(cfg.PORT, () => {
     console.info(`✔  Server started on port ${cfg.PORT}...`)
   })
 }
-
 startServer()

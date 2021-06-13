@@ -5,7 +5,7 @@ import validateConfig from '../utils/validateConfig'
 const { parsed, error } = config()
 
 if (error || !parsed) {
-  throw error
+  throw error || new Error('dotenv error')
 }
 
 const cfg: Config = {
