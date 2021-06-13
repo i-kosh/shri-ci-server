@@ -41,15 +41,28 @@ class BuildQueue {
 
   public async add(cfg: QueueBuildConfig['data']): Promise<AddReturn> {
     const repo = await repoManager.getRepoAsync()
+
     const response = await buildModel.queueBuild({
       data: cfg,
     })
 
-    await this.queue.pushAsync({
-      id: response.data.data.id,
-      commitHash: cfg.commitHash,
-      buildCommand: repo.params.buildCommand,
-    })
+    void this.queue
+      .pushAsync({
+        id: response.data.data.id,
+        commitHash: cfg.commitHash,
+        buildCommand: repo.params.buildCommand,
+      })
+      .catch(() => {
+        void buildModel
+          .reportBuildCanceled({
+            data: {
+              buildId: response.data.data.id,
+            },
+          })
+          .catch(() => {
+            // noop
+          })
+      })
 
     return response
   }

@@ -48,10 +48,6 @@ export class Repo {
     void this.cloneRepo()
   }
 
-  private get gitDirFlag() {
-    return `--git-dir=${join(this.fullPath, '/.git')}`
-  }
-
   private isGitLink(link: string): boolean {
     return link.endsWith('.git')
   }
@@ -91,7 +87,9 @@ export class Repo {
 
   private async checkout(to: string): Promise<void> {
     await this.waitRepoReady()
-    await execFileAsync('git', [this.gitDirFlag, 'checkout', to])
+    await execFileAsync('git', ['checkout', '-f', to], {
+      cwd: this.fullPath,
+    })
   }
 
   private async cloneRepo(): Promise<void> {
@@ -122,13 +120,11 @@ export class Repo {
     const formatString = '%H&%an&%s' // hash&author&message
     const formatSeparator = '&'
 
-    const { stdout } = await execFileAsync('git', [
-      this.gitDirFlag,
-      'show',
-      '-s',
-      `--format="${formatString}"`,
-      hash,
-    ])
+    const { stdout } = await execFileAsync(
+      'git',
+      ['show', '-s', `--format="${formatString}"`, hash],
+      { cwd: this.fullPath }
+    )
 
     const parsed: string[] | undefined = stdout
       .split('"')[1]
@@ -156,7 +152,13 @@ export class Repo {
       // TODO: санитизировать buildCommand
       const { stderr, stdout } = await execFileAsync(
         `${this.params.buildCommand}`,
-        { cwd: this.fullPath, shell: true }
+        {
+          cwd: this.fullPath,
+          shell: true,
+          env: Object.assign({}, process.env, {
+            CI: 'true',
+          }),
+        }
       )
 
       log = `${stdout}\n${stderr}`

@@ -1,13 +1,23 @@
 import { ErrorRequestHandler } from 'express'
 
-const isError = (err: unknown): err is Error => {
-  return err instanceof Error
+class ServerError extends Error {
+  constructor(msg?: string) {
+    super(msg)
+  }
+
+  public toJSON() {
+    return {
+      text: this.message || 'Internal Server Error',
+    }
+  }
+
+  public toString() {
+    return JSON.stringify(this.toJSON())
+  }
 }
 
 const handler: ErrorRequestHandler = (err, req, res, next) => {
-  res.status(500).json({
-    text: isError(err) ? err.message : 'Internal Server Error',
-  })
+  res.status(500).json(new ServerError('Internal Server Error'))
 
   next()
 }

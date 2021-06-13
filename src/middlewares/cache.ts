@@ -46,11 +46,13 @@ export function addCache(
 
     if (!cached || cached.expires <= Date.now()) {
       res.json = (body) => {
-        memSet(key, {
-          data: body,
-          expires: Date.now() + cfg.ttl,
-          sizeBytes: Buffer.from(body).byteLength,
-        })
+        if (!(body instanceof Error)) {
+          memSet(key, {
+            data: body,
+            expires: Date.now() + cfg.ttl,
+            sizeBytes: Buffer.from(`${body}`).byteLength,
+          })
+        }
 
         return originalResJson(body)
       }
