@@ -6,7 +6,7 @@ const isError = (err: unknown): err is Error => {
 
 const handler: ErrorRequestHandler = (err, req, res, next) => {
   res.status(500).json({
-    text: isError(err) ? err.message : 'Server error',
+    text: isError(err) ? err.message : 'Internal Server Error',
   })
 
   next()
