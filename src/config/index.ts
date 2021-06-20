@@ -5,7 +5,8 @@ import validateConfig from '../utils/validateConfig'
 const { parsed, error } = config()
 
 if (error || !parsed) {
-  throw error || new Error('dotenv error')
+  console.log('Please create .env file as it shown in .env.example')
+  process.exit(0)
 }
 
 const cfg: Config = {
