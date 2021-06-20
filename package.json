@@ -25,7 +25,7 @@
     "start": "cross-env NODE_ENV=production node dist/server.js",
     "dev": "cross-env NODE_ENV=development nodemon",
     "build": "shx rm -rf dist && tsc --build tsconfig.prod.json",
-    "lint": "eslint src/**/*.{js,ts}",
+    "lint": "eslint src/**/*.ts",
     "test": "npm run lint && tsc --pretty --noEmit --project tsconfig.prod.json",
     "prepare": "husky install"
   },
