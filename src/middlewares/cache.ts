@@ -1,5 +1,7 @@
 import { RequestHandler } from 'express'
 
+// TODO: данный кеш не подходит для потоков нужен новый
+
 interface Cached {
   expires: number
   data: unknown

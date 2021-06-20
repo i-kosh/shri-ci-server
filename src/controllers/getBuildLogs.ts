@@ -1,6 +1,8 @@
 import buildModel from '../models/Build'
 import { RequestHandler } from 'express'
 
+// TODO: тут сервер возвращает поток
+
 export type getBuildParams = {
   buildId?: string
 }
