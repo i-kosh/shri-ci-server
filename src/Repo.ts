@@ -37,7 +37,7 @@ export class Repo {
   private folderName: string
 
   constructor(public readonly params: RepoParams) {
-    this.failed = !this.isGitLink(params.repoLink)
+    this.failed = false
     this.exist = false
     this.folderName = uuidv5(
       params.repoLink,
@@ -46,10 +46,6 @@ export class Repo {
     this.fullPath = join(tmpdir(), this.folderName)
 
     void this.cloneRepo()
-  }
-
-  private isGitLink(link: string): boolean {
-    return link.endsWith('.git')
   }
 
   private async isGitDir(path: string): Promise<boolean> {
