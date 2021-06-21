@@ -1,11 +1,12 @@
 import cors from 'cors'
 import express, { Express } from 'express'
 import morgan from 'morgan'
-import cfg from '../config'
 import finalErrorHandler from './finalErrorHandler'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import speedLimiter from 'express-slow-down'
+import { setReqId, getReqId } from '../utils/getSetReqId'
+import { v4 as uuidv4 } from 'uuid'
 
 export const applyPreMiddlewares = (app: Express): void => {
   app.use(
@@ -24,8 +25,27 @@ export const applyPreMiddlewares = (app: Express): void => {
   app.use(cors())
   app.use(helmet())
 
+  app.use((req, res, next) => {
+    setReqId(req, uuidv4())
+    next()
+  })
+
   app.use(express.json())
-  app.use(morgan(cfg.NODE_ENV !== 'production' ? 'dev' : 'combined'))
+  app.use(
+    morgan((tokens, req, res) => {
+      return [
+        `${getReqId(req)}`,
+        '-',
+        tokens.method(req, res),
+        tokens.url(req, res),
+        tokens.status(req, res),
+        tokens.res(req, res, 'content-length'),
+        tokens['remote-addr'](req, res),
+        tokens['response-time'](req, res),
+        'ms',
+      ].join(' ')
+    })
+  )
 }
 
 export const applyFinalMiddlewares = (app: Express): void => {
