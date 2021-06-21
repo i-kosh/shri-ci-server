@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express'
-
-// TODO: данный кеш не подходит для потоков нужен новый
+import { getReqId } from '../utils/getSetReqId'
 
 interface Cached {
   expires: number
@@ -8,9 +7,9 @@ interface Cached {
   sizeBytes: number
 }
 interface Params {
-  ttl: number
-  cacheSizeMB: number
-  itemMaxSizeMB: number
+  ttl?: number
+  cacheSizeMB?: number
+  itemMaxSizeMB?: number
 }
 type reqKey = string
 
@@ -18,22 +17,30 @@ const bytesToMB = (bytes: number) => {
   return bytes / 1e6
 }
 
-export function addCache(
-  target: RequestHandler,
-  cfg: Params = {
-    ttl: 1000 * 60 * 5, // 5min
-    cacheSizeMB: 10,
-    itemMaxSizeMB: 1,
+const defaultParams: Readonly<Required<Params>> = {
+  ttl: 1000 * 60 * 10, // 10min
+  cacheSizeMB: 10,
+  itemMaxSizeMB: 1,
+}
+
+export function addCache(target: RequestHandler, cfg?: Params): RequestHandler {
+  const cfgParams = {
+    ...defaultParams,
+    ...cfg,
   }
-): RequestHandler {
+
   let memSize = 0
   const mem: Map<reqKey, Cached> = new Map()
 
   const memSet = (key: string, val: Cached) => {
-    // TODO: сделать нормально
-    if (bytesToMB(memSize) > cfg.cacheSizeMB) mem.clear()
-    if (bytesToMB(val.sizeBytes) > cfg.itemMaxSizeMB) {
-      console.warn(`Item too big (${bytesToMB(val.sizeBytes)})`)
+    // TODO: сделать нормальное вытеснение из кеша
+    if (bytesToMB(memSize) > cfgParams.cacheSizeMB) mem.clear()
+    if (bytesToMB(val.sizeBytes) > cfgParams.itemMaxSizeMB) {
+      console.warn(
+        `Item biger than 'itemMaxSizeMB' (${bytesToMB(val.sizeBytes).toFixed(
+          2
+        )} > ${cfgParams.itemMaxSizeMB}) caching skipped`
+      )
       return
     }
 
@@ -49,11 +56,28 @@ export function addCache(
     if (!cached || cached.expires <= Date.now()) {
       res.json = (body) => {
         if (!(body instanceof Error)) {
+          const expires = Date.now() + cfgParams.ttl
+          const sizeBytes = Buffer.from(`${body}`).byteLength
+          console.log(
+            `Caching new data:
+              exp=${new Date(expires).toUTCString()}
+              size=${bytesToMB(sizeBytes).toFixed(2)}mb`
+          )
           memSet(key, {
             data: body,
-            expires: Date.now() + cfg.ttl,
-            sizeBytes: Buffer.from(`${body}`).byteLength,
+            expires,
+            sizeBytes,
           })
+
+          const loadPrecent = (
+            (cfgParams.cacheSizeMB / 100) *
+            bytesToMB(memSize)
+          ).toFixed(2)
+          console.log(
+            `Current cache loading ${loadPrecent}% (${bytesToMB(
+              memSize
+            ).toFixed(2)}mb of ${cfgParams.cacheSizeMB}mb)`
+          )
         }
 
         return originalResJson(body)
@@ -61,6 +85,7 @@ export function addCache(
 
       target(req, res, next)
     } else {
+      console.log(`Serving cached data for ${getReqId(req)}`)
       res.json(cached.data)
     }
   }
