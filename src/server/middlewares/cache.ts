@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import { getReqId } from '../utils/getSetReqId'
+import { bytesToMB } from '../utils/bytesToMB'
 
 interface Cached {
   expires: number
@@ -12,10 +13,6 @@ interface Params {
   itemMaxSizeMB?: number
 }
 type reqKey = string
-
-const bytesToMB = (bytes: number) => {
-  return bytes / 1e6
-}
 
 const defaultParams: Readonly<Required<Params>> = {
   ttl: 1000 * 60 * 10, // 10min
