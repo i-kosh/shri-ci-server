@@ -43,15 +43,17 @@ export const applyPreMiddlewares = (app: Express): void => {
   app.use(
     morgan((tokens, req, res) => {
       return [
-        `${getReqId(req)}`,
-        '-',
-        tokens.method(req, res),
-        tokens.url(req, res),
-        tokens.status(req, res),
-        tokens.res(req, res, 'content-length'),
-        tokens['remote-addr'](req, res),
         tokens['response-time'](req, res),
         'ms',
+        '|',
+        tokens['remote-addr'](req, res),
+        '|',
+        tokens.method(req, res),
+        tokens.status(req, res),
+        tokens.url(req, res),
+        tokens.res(req, res, 'content-length'),
+        '-',
+        `${getReqId(req)}`,
       ].join(' ')
     })
   )
