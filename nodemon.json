@@ -1,6 +1,6 @@
 {
-  "watch": ["src"],
+  "watch": ["src/server"],
   "ext": "ts,tsx,js,jsx,json",
-  "ignore": ["src/**/*.spec.ts"],
-  "exec": "ts-node ./src/server.ts --project ./tsconfig.json"
+  "ignore": ["**/*.test.ts", "**/*.spec.ts", "node_modules", "src/client"],
+  "exec": "ts-node ./src/server/server.ts --project ./tsconfig.server.json"
 }

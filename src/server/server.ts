@@ -4,12 +4,20 @@ import apiRouter from './routes'
 import { applyPreMiddlewares, applyFinalMiddlewares } from './middlewares'
 import { repoManager } from './Repo'
 import settingsModel from './models/Settings'
+import { resolve } from 'path'
+
+const pathToStatic = cfg.isDev
+  ? resolve(__dirname, '../../dist/static')
+  : resolve(__dirname, '../static')
 
 const app = express()
 applyPreMiddlewares(app)
 
 app.use('/api', apiRouter)
-
+app.use('/static', express.static(pathToStatic))
+app.use('*', (req, res) => {
+  res.sendFile(resolve(pathToStatic, '../index.html'))
+})
 applyFinalMiddlewares(app)
 
 function startServer() {
@@ -34,3 +42,5 @@ function startServer() {
   })
 }
 startServer()
+
+console.log(process.env.NODE_ENV)

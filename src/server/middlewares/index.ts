@@ -12,18 +12,27 @@ export const applyPreMiddlewares = (app: Express): void => {
   app.use(
     rateLimit({
       windowMs: 1 * 60 * 1000,
-      max: 100,
+      max: 1000,
     })
   )
   app.use(
     speedLimiter({
       windowMs: 5 * 60 * 1000,
-      delayAfter: 500,
+      delayAfter: 2500,
       delayMs: 100,
     })
   )
   app.use(cors())
-  app.use(helmet())
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          'script-src': ["'self'", "'unsafe-eval'"],
+        },
+      },
+    })
+  )
 
   app.use((req, res, next) => {
     setReqId(req, uuidv4())

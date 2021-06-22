@@ -1,0 +1,9 @@
+.box {
+  padding: 20px;
+  background-color: var(--color-bg-main);
+  border-radius: 4px;
+}
+
+.box--modal {
+  box-shadow: 0 0 1px rgba(67, 68, 69, 0.3), 0 6px 16px rgba(67, 68, 69, 0.3);
+}

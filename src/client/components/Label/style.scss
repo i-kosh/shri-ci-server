@@ -1,0 +1,29 @@
+.label {
+  display: flex;
+  flex-direction: column;
+  max-width: 474px;
+}
+
+.label__text {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.label__content {
+  flex-grow: 1;
+}
+
+.label__text-mark {
+  color: var(--color-error);
+  margin-left: 0.2em;
+}
+
+.label--left {
+  flex-direction: row;
+
+  .label__text {
+    margin-bottom: 0;
+    margin-right: 8px;
+  }
+}

@@ -9,11 +9,15 @@ if (error || !parsed) {
   process.exit(0)
 }
 
+const NODE_ENV = parsed.NODE_ENV || process.env.NODE_ENV || 'production'
+
 const cfg: Config = {
   PORT: parsed.PORT || process.env.PORT || '3030',
   TOKEN: parsed.TOKEN,
-  NODE_ENV: parsed.NODE_ENV || process.env.NODE_ENV || 'production',
+  NODE_ENV,
   DB: parsed.DB,
+  isDev: NODE_ENV === 'development',
+  isProd: NODE_ENV === 'production',
 }
 
 validateConfig(cfg)

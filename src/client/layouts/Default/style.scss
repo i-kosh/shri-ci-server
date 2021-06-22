@@ -1,0 +1,80 @@
+@import '../../scss/variables.scss';
+
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+  flex-grow: 1;
+}
+
+.page__header {
+  min-height: 52px;
+  display: flex;
+  padding: 12px 0;
+  margin-bottom: 8px;
+}
+
+.page__header-title {
+  font-size: 18px;
+  margin-right: 8px;
+
+  @media (min-width: $desktop) {
+    font-size: 24px;
+  }
+}
+
+.page__buttons {
+  margin-left: auto;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.page__main {
+  flex-grow: 1;
+}
+
+.page__footer {
+  min-height: 32px;
+  background-color: var(--color-bg-second);
+}
+
+.page__footer-content {
+  padding: 12px 0;
+  row-gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+
+  @media (min-width: $desktop) {
+    padding: 8px 0;
+  }
+}
+
+.page__footer-copy {
+  width: 100%;
+
+  @media (min-width: $desktop) {
+    width: auto;
+    margin-left: auto;
+  }
+}
+
+.footer-nav {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 8px;
+
+  li:not(:last-child) {
+    margin-right: 12px;
+  }
+}
+
+.footer-copy {
+  cursor: default;
+  color: var(--color-text-second);
+}
+
+.page__header-title--dimm {
+  color: var(--color-text-second);
+}

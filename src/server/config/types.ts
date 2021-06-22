@@ -3,4 +3,6 @@ export interface Config {
   PORT: string
   TOKEN: string
   DB: string
+  isDev: boolean
+  isProd: boolean
 }

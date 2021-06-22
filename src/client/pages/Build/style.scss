@@ -1,0 +1,33 @@
+@import '../../scss/variables.scss';
+
+.rebuild-button {
+  display: none;
+  margin-right: 8px;
+
+  @media (max-width: $desktop) {
+    display: block;
+  }
+}
+
+.rebuild-button-desktop {
+  margin-right: 8px;
+  display: none;
+
+  @media (min-width: $desktop) {
+    display: block;
+  }
+}
+
+.log {
+  margin: 16px 0;
+  margin-left: -$page-padding-x;
+  margin-right: -$page-padding-x;
+  width: 100vw;
+
+  @media (min-width: $desktop) {
+    margin: 0;
+    margin-top: 12px;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+}
