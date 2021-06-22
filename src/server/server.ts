@@ -42,5 +42,3 @@ function startServer() {
   })
 }
 startServer()
-
-console.log(process.env.NODE_ENV)
