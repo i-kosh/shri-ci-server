@@ -6,14 +6,14 @@ export interface DBresponse<T = unknown> {
 //Misc
 
 export interface DBReqConfig {
-  params?: Record<string, string | number>
+  params?: unknown
   data?: unknown
 }
 
 export type GetBuildListConfig = DBReqConfig & {
   params: {
-    offset: number
-    limit: number
+    offset?: number
+    limit?: number
   }
 }
 
