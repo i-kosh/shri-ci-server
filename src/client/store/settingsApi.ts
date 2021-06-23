@@ -1,14 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
-interface SettingsResponse {
-  id: string
-  repoName: string
-  buildCommand: string
-  mainBranch?: string
-  period?: number
-}
+import type { SettingsResponse, SettingsSaveRequest } from '../../types'
 
 export const settingsApi = createApi({
+  tagTypes: ['Settings'],
   reducerPath: 'settingsApi',
   baseQuery: fetchBaseQuery({
     baseUrl: '/api',
@@ -16,8 +10,17 @@ export const settingsApi = createApi({
   endpoints: (builder) => ({
     loadSettings: builder.query<SettingsResponse, null>({
       query: () => '/settings',
+      providesTags: ['Settings'],
+    }),
+    saveSettings: builder.mutation<SettingsSaveRequest, null>({
+      query: (newSettings) => ({
+        url: '/settings',
+        method: 'POST',
+        body: newSettings,
+      }),
+      invalidatesTags: ['Settings'],
     }),
   }),
 })
 
-export const { useLoadSettingsQuery } = settingsApi
+export const { useLoadSettingsQuery, useSaveSettingsMutation } = settingsApi
