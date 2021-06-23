@@ -1,9 +1,10 @@
 import { resolve } from 'path'
 import { Configuration } from 'webpack'
-import { Options as TsLoaderOptions } from 'ts-loader'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CopyPlugin from 'copy-webpack-plugin'
+import postcssPresetEnv from 'postcss-preset-env'
+import autoprefixer from 'autoprefixer'
 
 const dist = resolve(__dirname, 'dist')
 
@@ -57,10 +58,14 @@ const config: Configuration = {
       {
         test: /\.tsx?$/,
         use: {
-          loader: 'ts-loader',
+          loader: 'babel-loader',
           options: {
-            onlyCompileBundledFiles: true,
-          } as TsLoaderOptions,
+            presets: [
+              '@babel/preset-env',
+              '@babel/preset-react',
+              '@babel/preset-typescript',
+            ],
+          },
         },
       },
       {
@@ -69,6 +74,14 @@ const config: Configuration = {
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [autoprefixer(), postcssPresetEnv()],
+              },
+            },
           },
           {
             loader: 'sass-loader',

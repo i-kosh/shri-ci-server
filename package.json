@@ -19,6 +19,9 @@
     "npm": "6"
   },
   "engineStrict": true,
+  "browserslist": [
+    "defaults"
+  ],
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
     "*.{js,jsx,ts,tsx,css,scss,json,html,md}": "prettier --write"
@@ -27,10 +30,10 @@
     "start": "cross-env NODE_ENV=production node dist/server/server.js",
     "dev": "cross-env NODE_ENV=development concurrently \"nodemon\" \"webpack --mode development -c webpack.client.ts -w\"",
     "dev:server": "cross-env NODE_ENV=development nodemon",
-    "dev:client": "cross-env NODE_ENV=development webpack --mode development -c webpack.client.ts -w",
+    "dev:client": "shx rm -rf dist/static dist/index.html && cross-env NODE_ENV=development webpack --mode development -c webpack.client.ts -w",
     "build": "shx rm -rf dist && npm run build:client && npm run build:server",
     "build:server": "shx rm -rf dist/server && tsc --build tsconfig.server.json",
-    "build:client": "shx rm -rf dist/static && webpack --progress --mode production -c webpack.client.ts",
+    "build:client": "shx rm -rf dist/static dist/index.html && webpack --progress --mode production -c webpack.client.ts",
     "lint": "eslint src/**/*.{ts,tsx} && stylelint src/client/**/*.{css,scss}",
     "test": "npm run lint && tsc --pretty --noEmit --project tsconfig.json && tsc --pretty --noEmit --project tsconfig.server.json",
     "prepare": "husky install"
@@ -56,6 +59,10 @@
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.7",
+    "@babel/preset-react": "^7.14.5",
+    "@babel/preset-typescript": "^7.14.5",
     "@svgr/webpack": "^5.5.0",
     "@tsconfig/recommended": "^1.0.1",
     "@types/async": "^3.2.6",
@@ -67,12 +74,14 @@
     "@types/mini-css-extract-plugin": "^1.4.3",
     "@types/morgan": "^1.9.2",
     "@types/node": "^14.17.3",
+    "@types/postcss-preset-env": "^6.7.2",
     "@types/react": "^17.0.11",
     "@types/react-dom": "^17.0.7",
     "@types/react-router-dom": "^5.1.7",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.26.1",
     "@typescript-eslint/parser": "^4.26.1",
+    "babel-loader": "^8.2.2",
     "concurrently": "^6.2.0",
     "copy-webpack-plugin": "^9.0.0",
     "css-loader": "^5.2.6",
@@ -84,6 +93,9 @@
     "lint-staged": "^11.0.0",
     "mini-css-extract-plugin": "^1.6.0",
     "nodemon": "^2.0.7",
+    "postcss": "^8.3.5",
+    "postcss-loader": "^6.1.0",
+    "postcss-preset-env": "^6.7.0",
     "prettier": "^2.3.1",
     "sass": "^1.35.1",
     "sass-loader": "^12.1.0",
@@ -91,7 +103,6 @@
     "stylelint": "^13.13.1",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^22.0.0",
-    "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
     "tslib": "^2.2.0",
     "typescript": "^4.3.2",
