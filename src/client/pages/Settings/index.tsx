@@ -1,19 +1,23 @@
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useEffect } from 'react'
 import { DefaultLayout } from '../../layouts/Default'
 import { InputWithLabel } from '../../components/InputWithLabel'
 import { InputShort } from '../../components/InputShort'
 import { Button } from '../../components/Button'
 import { ButtonRouter } from '../../components/ButtonRouter'
 import { useFormik } from 'formik'
+import { setSettings, selectSettings } from '../../store/settingsSlice'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import './style.scss'
 
 export const SettingsPage: FunctionComponent = () => {
+  const dispatch = useAppDispatch()
+  const settings = useAppSelector(selectSettings)
   const formic = useFormik({
     initialValues: {
-      repo: '',
-      command: '',
-      branch: '',
-      minutes: '',
+      repo: settings.reponame,
+      command: settings.command,
+      branch: settings.branch,
+      minutes: settings.minutes,
     },
     validate: (values) => {
       const errors = {} as Partial<typeof values>
@@ -29,11 +33,25 @@ export const SettingsPage: FunctionComponent = () => {
       return errors
     },
     onSubmit: (values) => {
-      console.log('submit')
-      console.log(values)
+      dispatch(
+        setSettings({
+          command: values.command,
+          reponame: values.repo,
+          branch: values.branch,
+          minutes: values.minutes,
+        })
+      )
     },
     validateOnBlur: false,
   })
+  useEffect(() => {
+    formic.setValues({
+      repo: settings.reponame,
+      command: settings.command,
+      branch: settings.branch,
+      minutes: settings.minutes,
+    })
+  }, [settings])
 
   return (
     <DefaultLayout>
