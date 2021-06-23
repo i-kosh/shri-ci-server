@@ -32,17 +32,6 @@ $append-shift: 12px;
     background-color: var(--color-bg-control);
     border-color: $border-accent;
   }
-
-  &:disabled {
-    cursor: default !important;
-    background-color: var(--color-bg-disabled) !important;
-    border-color: var(--color-bg-disabled) !important;
-    color: var(--color-text-disabled) !important;
-
-    & > * {
-      opacity: 0.5;
-    }
-  }
 }
 
 .button__content {
@@ -124,5 +113,17 @@ $append-shift: 12px;
 
   .button__prepend {
     width: $padding-x-xs + $append-shift;
+  }
+}
+
+.button--disabled {
+  cursor: default !important;
+  background-color: var(--color-bg-disabled) !important;
+  border-color: var(--color-bg-disabled) !important;
+  color: var(--color-text-disabled) !important;
+  pointer-events: none !important;
+
+  & > * {
+    opacity: 0.5;
   }
 }

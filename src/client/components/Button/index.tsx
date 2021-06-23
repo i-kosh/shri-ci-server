@@ -19,6 +19,7 @@ export interface ButtonProps {
   tag?: 'a' | 'button'
   className?: string
   nativeAttrs?: NativeAttrs
+  disabled?: boolean
 }
 
 export const Button: FunctionComponent<ButtonProps> = ({
@@ -28,6 +29,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
   size,
   tag,
   className,
+  disabled,
   nativeAttrs,
 }) => {
   const rootClasses =
@@ -38,6 +40,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
       'button--prepended': !!prepend,
       'button--sm': size === 'sm',
       'button--xs': size === 'xs',
+      'button--disabled': disabled,
     }) + ` ${className || ''}`
 
   return createElement<NativeAttrs & ButtonProps>(
@@ -45,6 +48,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
     {
       className: rootClasses,
       ...nativeAttrs,
+      tabIndex: disabled ? -1 : undefined,
     },
     <>
       {prepend && <div className="button__prepend">{prepend}</div>}
