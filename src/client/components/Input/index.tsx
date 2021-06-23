@@ -48,11 +48,8 @@ export const Input: FunctionComponent<InputProps> = (props) => {
   }, [value])
 
   const handleChange = (val: string | number) => {
-    if (onChange) {
-      onChange(val)
-    } else {
-      setVal(val)
-    }
+    onChange && onChange(val)
+    setVal(val)
   }
 
   return (
