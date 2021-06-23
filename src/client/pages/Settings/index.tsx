@@ -54,7 +54,7 @@ export const SettingsPage: FunctionComponent = () => {
   }, [settings])
 
   return (
-    <DefaultLayout>
+    <DefaultLayout title={settings.reponame}>
       <div className="settings">
         <h2 className="settings__header">Settings</h2>
         <p className="settings__subtitle">
