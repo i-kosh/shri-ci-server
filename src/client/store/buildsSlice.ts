@@ -17,10 +17,13 @@ export const buildsSlice = createSlice({
     setBuildsList: (state, action: PayloadAction<BuildsState['list']>) => {
       state.list = action.payload
     },
+    addBuildsList: (state, action: PayloadAction<BuildsState['list']>) => {
+      state.list = state.list.concat(action.payload)
+    },
   },
 })
 
-export const { setBuildsList } = buildsSlice.actions
+export const { setBuildsList, addBuildsList } = buildsSlice.actions
 
 export const selectBuildsList = (state: RootState): BuildsState['list'] =>
   state.builds.list

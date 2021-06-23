@@ -47,4 +47,7 @@ export const {
   useFetchBuildLogQuery,
   useFetchBuildQuery,
   useQueueBuildMutation,
+  useLazyFetchBuildLogQuery,
+  useLazyFetchBuildQuery,
+  useLazyFetchBuildsListQuery,
 } = buildsApi
