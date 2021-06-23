@@ -10,6 +10,7 @@ const dist = resolve(__dirname, 'dist')
 
 const config: Configuration = {
   mode: 'development',
+  devtool: 'eval-source-map',
   target: 'web',
   watchOptions: {
     ignored: 'src/server/*',
