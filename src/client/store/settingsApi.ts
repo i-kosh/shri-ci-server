@@ -12,7 +12,7 @@ export const settingsApi = createApi({
       query: () => '/settings',
       providesTags: ['Settings'],
     }),
-    saveSettings: builder.mutation<SettingsSaveRequest, null>({
+    saveSettings: builder.mutation<null, SettingsSaveRequest>({
       query: (newSettings) => ({
         url: '/settings',
         method: 'POST',
@@ -23,4 +23,8 @@ export const settingsApi = createApi({
   }),
 })
 
-export const { useLoadSettingsQuery, useSaveSettingsMutation } = settingsApi
+export const {
+  useLoadSettingsQuery,
+  useSaveSettingsMutation,
+  useLazyLoadSettingsQuery,
+} = settingsApi
