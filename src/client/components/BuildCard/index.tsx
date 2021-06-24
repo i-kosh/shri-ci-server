@@ -12,11 +12,11 @@ import './style.scss'
 
 export interface BuildCardProps {
   status: 'success' | 'wait' | 'fail'
-  number: string
-  msg: string
-  mainBranch: string
-  commitHash: string
-  author: string
+  number?: string | number
+  msg?: string
+  mainBranch?: string
+  commitHash?: string
+  author?: string
   startDate: string
   duration: number | string
   selectable?: boolean
@@ -52,7 +52,7 @@ export const BuildCard: FC<BuildCardProps> = (props) => {
       'build-card--link': !!path,
     }) + ` ${className || ''}`
 
-  const shortHash = commitHash.slice(0, 6)
+  const shortHash = commitHash?.slice(0, 6)
   const date = new Date(startDate)
   const getStartDateString = () => {
     const monthsRU = [
