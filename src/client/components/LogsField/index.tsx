@@ -5,7 +5,7 @@ import './style.scss'
 
 export interface LogsFieldProps {
   className?: string
-  log: string
+  log?: string
 }
 
 const convert = new Convert({
@@ -25,7 +25,7 @@ export const LogsField: FC<LogsFieldProps> = (props) => {
     <pre
       className={rootClasses}
       dangerouslySetInnerHTML={{
-        __html: convert.toHtml(log.trim()),
+        __html: convert.toHtml(log?.trim() || ''),
       }}
     ></pre>
   )
