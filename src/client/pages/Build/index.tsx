@@ -13,6 +13,7 @@ import {
   useFetchBuildLogQuery,
 } from '../../store/buildsApi'
 import { getStatus } from '../../utils/getStatus'
+import { useQueueBuild } from '../../hooks/useQueueBuild'
 
 export const BuildPage: FunctionComponent = () => {
   const settings = useAppSelector(selectSettings)
@@ -20,6 +21,7 @@ export const BuildPage: FunctionComponent = () => {
   const build = useFetchBuildQuery(buildId)
   const buildStatus = getStatus(build.data?.status || 'Waiting')
   const log = useFetchBuildLogQuery(buildId)
+  const { queueNewBuild } = useQueueBuild()
 
   const settingsButton = (
     <>
@@ -34,7 +36,18 @@ export const BuildPage: FunctionComponent = () => {
         </Button>
       </div>
       <div className="rebuild-button-desktop">
-        <Button size="sm" prepend={<ReloadSvg />}>
+        <Button
+          size="sm"
+          prepend={<ReloadSvg />}
+          nativeAttrs={{
+            onClick: () => {
+              if (build.data) {
+                queueNewBuild(build.data.commitHash)
+              }
+            },
+            disabled: !build.data,
+          }}
+        >
           Rebuild
         </Button>
       </div>

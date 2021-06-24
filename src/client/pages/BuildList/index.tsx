@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import React, { FunctionComponent, useState, useRef } from 'react'
 import { DefaultLayout } from '../../layouts/Default'
 import { Button } from '../../components/Button'
 import { ReactComponent as PlaySvg } from '../../assets/play.svg'
@@ -6,33 +6,19 @@ import { BuildCard } from '../../components/BuildCard'
 import { Modal } from '../../components/Modal'
 import { Box } from '../../components/Box'
 import { Input } from '../../components/Input'
-import './style.scss'
-import { useLazyFetchBuildsListQuery } from '../../store/buildsApi'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { useAppSelector } from '../../store/hooks'
 import { selectSettings } from '../../store/settingsSlice'
-import { selectBuildsList, addBuildsList } from '../../store/buildsSlice'
 import { getStatus } from '../../utils/getStatus'
+import { useBuildList } from './useBuildList'
+import { useQueueBuild } from '../../hooks/useQueueBuild'
+import './style.scss'
 
 export const BuildList: FunctionComponent = () => {
-  const loadingLimit = 25
-  const dispatch = useAppDispatch()
-
   const settings = useAppSelector(selectSettings)
-  const buildList = useAppSelector(selectBuildsList)
-
+  const { buildList, noMoreBuilds, fetchBuilds, loadingLimit } = useBuildList()
   const [isModalOpen, setModalOpen] = useState(false)
-  const [fetchBuilds, { data, isUninitialized }] = useLazyFetchBuildsListQuery()
-
-  useEffect(() => {
-    if (!buildList.length && isUninitialized)
-      fetchBuilds({ limit: loadingLimit })
-
-    if (data) {
-      dispatch(addBuildsList(data))
-    }
-  }, [data])
-
-  const noMoreBuilds = data && data.length < loadingLimit
+  const { queueNewBuild } = useQueueBuild()
+  const newBuildRef = useRef<string | number>('')
 
   const settingsButton = (
     <>
@@ -115,8 +101,19 @@ export const BuildList: FunctionComponent = () => {
             nativeAttrs={{
               placeholder: 'Commit hash',
             }}
+            onChange={(val) => {
+              newBuildRef.current = val
+            }}
           ></Input>
-          <Button className="newbuild__run" btnStyle="accent">
+          <Button
+            className="newbuild__run"
+            btnStyle="accent"
+            nativeAttrs={{
+              onClick: () => {
+                queueNewBuild(`${newBuildRef.current}`)
+              },
+            }}
+          >
             Run build
           </Button>
           <Button
