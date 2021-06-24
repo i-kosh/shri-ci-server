@@ -1,7 +1,12 @@
 import settingsModel from '../models/Settings'
 import { RequestHandler } from 'express'
+import type { SettingsResponse } from '../../types'
 
-const handler: RequestHandler = async (req, res, next) => {
+const handler: RequestHandler<unknown, SettingsResponse> = async (
+  req,
+  res,
+  next
+) => {
   try {
     const response = await settingsModel.getSettings()
 

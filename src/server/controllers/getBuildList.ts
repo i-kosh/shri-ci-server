@@ -1,9 +1,16 @@
 import buildModel from '../models/Build'
 import { RequestHandler } from 'express'
-import { BuildListParams } from '../../types'
+import { BuildListParams, BuildListResponse } from '../../types'
 
-const handler: RequestHandler = async (req, res, next) => {
-  const { limit, offset }: BuildListParams = req.query
+type Handler = RequestHandler<
+  unknown,
+  BuildListResponse,
+  unknown,
+  BuildListParams
+>
+
+const handler: Handler = async (req, res, next) => {
+  const { limit, offset } = req.query
 
   try {
     const response = await buildModel.getBuildList({

@@ -1,3 +1,5 @@
+import type { QueueBuildResponse as QueueBuildResponseBack } from './server/models/types'
+
 // GetBuild
 export interface Build {
   id: string
@@ -13,10 +15,13 @@ export interface Build {
 }
 export type BuildID = string
 export type BuildResponse = Build
+export interface BuildParams {
+  buildId?: string
+}
 
 // QueueBuild
 export type CommitHash = string
-export type QueueBuildResponse = undefined
+export type QueueBuildResponse = QueueBuildResponseBack['data']
 
 // BuildList
 export interface BuildListParams {
@@ -27,6 +32,9 @@ export type BuildListResponse = Build[]
 
 // BUildLog
 export type LogResponse = string
+export interface LogParams {
+  buildId?: string
+}
 
 // Settings Save
 export interface SettingsSaveRequest {
@@ -35,6 +43,7 @@ export interface SettingsSaveRequest {
   period?: number
   repoName: string
 }
+export type SettingsSaveResponse = undefined
 
 // SettingsGet
 export interface SettingsResponse {

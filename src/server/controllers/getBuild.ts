@@ -1,11 +1,8 @@
 import buildModel from '../models/Build'
 import { RequestHandler } from 'express'
+import type { BuildResponse, BuildParams } from '../../types'
 
-export type getBuildParams = {
-  buildId?: string
-}
-
-type ReqHandler = RequestHandler<getBuildParams>
+type ReqHandler = RequestHandler<BuildParams, BuildResponse>
 
 const handler: ReqHandler = async (req, res, next) => {
   try {

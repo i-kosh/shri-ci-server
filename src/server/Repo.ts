@@ -15,7 +15,7 @@ export interface CommitInfo {
 
 export interface RepoParams {
   repoLink: string
-  mainBranch: string
+  mainBranch?: string
   buildCommand: string
 }
 

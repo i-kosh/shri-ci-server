@@ -1,13 +1,8 @@
 import buildModel from '../models/Build'
 import { RequestHandler } from 'express'
+import type { LogResponse, LogParams } from '../../types'
 
-// TODO: тут сервер возвращает поток
-
-export type getBuildParams = {
-  buildId?: string
-}
-
-type ReqHandler = RequestHandler<getBuildParams>
+type ReqHandler = RequestHandler<LogParams, LogResponse>
 
 const handler: ReqHandler = async (req, res, next) => {
   try {

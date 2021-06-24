@@ -32,7 +32,7 @@ export type GetBuildDetailsConfig = DBReqConfig & {
 export type QueueBuildConfig = DBReqConfig & {
   data: {
     authorName: string
-    branchName: string
+    branchName?: string
     commitHash: string
     commitMessage: string
   }
@@ -63,8 +63,8 @@ export type ReportBuildCanceledConfig = DBReqConfig & {
 export type SetSettingsConfig = DBReqConfig & {
   data: {
     buildCommand: string
-    mainBranch: string
-    period: number
+    mainBranch?: string
+    period?: number
     repoName: string
   }
 }
@@ -74,7 +74,7 @@ export type SetSettingsConfig = DBReqConfig & {
 export type UUID = string
 export type ISODate = string
 
-export type BuildStatus = 'Waiting' | 'Failed' | 'Canceled' | 'Success'
+export type BuildStatus = 'Waiting' | 'Fail' | 'Canceled' | 'Success'
 export interface BuildEntity {
   authorName: string
   branchName: string
