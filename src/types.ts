@@ -53,3 +53,8 @@ export interface SettingsResponse {
   mainBranch?: string
   period?: number
 }
+
+// Errors
+export interface ErrorResponse {
+  text: string
+}
