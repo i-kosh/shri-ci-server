@@ -7,11 +7,15 @@ import { ButtonRouter } from '../../components/ButtonRouter'
 import { useFormik } from 'formik'
 import { setSettings, selectSettings } from '../../store/settingsSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { useSaveSettingsMutation } from '../../store/settingsApi'
 import './style.scss'
 
 export const SettingsPage: FunctionComponent = () => {
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectSettings)
+
+  const [saveSettings, { isLoading }] = useSaveSettingsMutation()
+
   const formic = useFormik({
     initialValues: {
       repo: settings.reponame,
@@ -32,15 +36,24 @@ export const SettingsPage: FunctionComponent = () => {
 
       return errors
     },
-    onSubmit: (values) => {
-      dispatch(
-        setSettings({
-          command: values.command,
-          reponame: values.repo,
-          branch: values.branch,
-          minutes: values.minutes,
-        })
-      )
+    onSubmit: async (values) => {
+      const result = await saveSettings({
+        repoName: values.repo,
+        buildCommand: values.command,
+        mainBranch: values.branch,
+        period: values.minutes ? +values.minutes : undefined,
+      })
+
+      if ('data' in result) {
+        dispatch(
+          setSettings({
+            command: values.command,
+            reponame: values.repo,
+            branch: values.branch,
+            minutes: values.minutes,
+          })
+        )
+      }
     },
     validateOnBlur: false,
   })
@@ -158,6 +171,7 @@ export const SettingsPage: FunctionComponent = () => {
           <Button
             btnStyle="accent"
             className="settings__save"
+            disabled={isLoading}
             nativeAttrs={{
               type: 'submit',
             }}
@@ -169,6 +183,7 @@ export const SettingsPage: FunctionComponent = () => {
             path="/"
             buttonProps={{
               className: 'settings__cancel',
+              disabled: isLoading,
             }}
           >
             Cancel
