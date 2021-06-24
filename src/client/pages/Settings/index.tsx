@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react'
+import React, { FunctionComponent, useEffect, useContext } from 'react'
 import { DefaultLayout } from '../../layouts/Default'
 import { InputWithLabel } from '../../components/InputWithLabel'
 import { InputShort } from '../../components/InputShort'
@@ -8,13 +8,31 @@ import { useFormik } from 'formik'
 import { setSettings, selectSettings } from '../../store/settingsSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { useSaveSettingsMutation } from '../../store/settingsApi'
+import { ToastsContext } from '../../components/ToastBox'
+import { extractError } from '../../utils/extractError'
 import './style.scss'
 
 export const SettingsPage: FunctionComponent = () => {
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectSettings)
+  const toastsCtx = useContext(ToastsContext)
 
-  const [saveSettings, { isLoading }] = useSaveSettingsMutation()
+  const [saveSettings, { isLoading, error }] = useSaveSettingsMutation()
+
+  useEffect(() => {
+    if (error) {
+      const err = extractError(error)
+
+      toastsCtx?.add(3000, {
+        msg: {
+          text: err.message,
+          props: {
+            style: 'Error',
+          },
+        },
+      })
+    }
+  }, [error])
 
   const formic = useFormik({
     initialValues: {
