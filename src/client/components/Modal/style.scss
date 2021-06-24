@@ -39,6 +39,9 @@ $anim-time: 0.3s;
   position: absolute;
   left: 0;
   top: 0;
+  animation-duration: $anim-time;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
 }
 
 .modal__content {
@@ -52,6 +55,9 @@ $anim-time: 0.3s;
   padding-right: $page-padding-x;
   padding-top: 20px;
   padding-bottom: 20px;
+  animation-duration: $anim-time;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
 }
 
 .modal--closed {
@@ -61,15 +67,11 @@ $anim-time: 0.3s;
 .modal--closing {
   .modal__content {
     animation-name: modal-anim;
-    animation-duration: $anim-time;
-    animation-timing-function: ease-in-out;
     animation-direction: normal;
   }
 
   .modal__backdrop {
     animation-name: backdrop-anim;
-    animation-duration: $anim-time;
-    animation-timing-function: ease-in-out;
     animation-direction: normal;
   }
 }
@@ -77,15 +79,11 @@ $anim-time: 0.3s;
 .modal--opening {
   .modal__content {
     animation-name: modal-anim;
-    animation-duration: $anim-time;
-    animation-timing-function: ease-in-out;
     animation-direction: reverse;
   }
 
   .modal__backdrop {
     animation-name: backdrop-anim;
-    animation-duration: $anim-time;
-    animation-timing-function: ease-in-out;
     animation-direction: reverse;
   }
 }

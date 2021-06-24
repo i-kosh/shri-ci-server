@@ -18,7 +18,7 @@ export const Modal: FC<ModalProps> = (props) => {
   })
 
   useEffect(() => {
-    const animDuration = 300 //ms
+    const animDuration = 290 //ms
 
     if (open) {
       setStates({
