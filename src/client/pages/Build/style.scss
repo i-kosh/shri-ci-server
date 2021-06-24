@@ -18,11 +18,18 @@
   }
 }
 
+.build-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
 .log {
   margin: 16px 0;
   margin-left: -$page-padding-x;
   margin-right: -$page-padding-x;
   width: 100vw;
+  flex-grow: 1;
 
   @media (min-width: $desktop) {
     margin: 0;

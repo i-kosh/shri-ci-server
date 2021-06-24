@@ -1,22 +1,25 @@
 import React, { FunctionComponent } from 'react'
 import { DefaultLayout } from '../../layouts/Default'
-// import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { BuildCard } from '../../components/BuildCard'
 import { Button } from '../../components/Button'
 import { ReactComponent as ReloadSvg } from '../../assets/reload.svg'
 import { LogsField } from '../../components/LogsField'
 import './style.scss'
-
-import { log } from '../../testlog'
+import { useAppSelector } from '../../store/hooks'
+import { selectSettings } from '../../store/settingsSlice'
+import {
+  useFetchBuildQuery,
+  useFetchBuildLogQuery,
+} from '../../store/buildsApi'
+import { getStatus } from '../../utils/getStatus'
 
 export const BuildPage: FunctionComponent = () => {
-  // const params = useParams<{ buildId: string }>()
-
-  // TODO: не забыть
-  const oneHour = 3_600_000
-  const tenMins = 600_000
-  const testDuration = oneHour * 3 + tenMins * 2.5 // 3 h 25 min
-  const testDate = '2021-04-17T10:20:30.931Z'
+  const settings = useAppSelector(selectSettings)
+  const { buildId } = useParams<{ buildId: string }>()
+  const build = useFetchBuildQuery(buildId)
+  const buildStatus = getStatus(build.data?.status || 'Waiting')
+  const log = useFetchBuildLogQuery(buildId)
 
   const settingsButton = (
     <>
@@ -39,22 +42,20 @@ export const BuildPage: FunctionComponent = () => {
   )
 
   return (
-    <DefaultLayout
-      title="philip1967/my-awesome-repo"
-      addButtons={settingsButton}
-    >
-      <BuildCard
-        author="Philip Kirkorov"
-        commitHash="34e4kf8j384d2w3dijf9"
-        duration={testDuration}
-        number="1"
-        msg="add documentation for postgres scaler"
-        mainBranch="main"
-        status="success"
-        startDate={testDate}
-      />
-
-      <LogsField className="log" log={log} />
+    <DefaultLayout title={settings.reponame} addButtons={settingsButton}>
+      <div className="build-page">
+        <BuildCard
+          author={build.data?.authorName}
+          commitHash={build.data?.commitHash}
+          duration={build.data?.duration || 0}
+          number={build.data?.buildNumber}
+          msg={build.data?.commitMessage}
+          mainBranch={build.data?.branchName}
+          status={buildStatus}
+          startDate={build.data?.start || ''}
+        />
+        <LogsField className="log" log={log.data} />
+      </div>
     </DefaultLayout>
   )
 }
