@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react'
 import { DefaultLayout } from '../../layouts/Default'
 import { Button } from '../../components/Button'
 import { ReactComponent as PlaySvg } from '../../assets/play.svg'
-import { BuildCard, BuildCardProps } from '../../components/BuildCard'
+import { BuildCard } from '../../components/BuildCard'
 import { Modal } from '../../components/Modal'
 import { Box } from '../../components/Box'
 import { Input } from '../../components/Input'
@@ -11,18 +11,7 @@ import { useLazyFetchBuildsListQuery } from '../../store/buildsApi'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { selectSettings } from '../../store/settingsSlice'
 import { selectBuildsList, addBuildsList } from '../../store/buildsSlice'
-import type { Build } from '../../../types'
-
-const getStatus = (status: Build['status']): BuildCardProps['status'] => {
-  switch (status) {
-    case 'Success':
-      return 'success'
-    case 'Waiting':
-      return 'wait'
-    default:
-      return 'fail'
-  }
-}
+import { getStatus } from '../../utils/getStatus'
 
 export const BuildList: FunctionComponent = () => {
   const loadingLimit = 25
