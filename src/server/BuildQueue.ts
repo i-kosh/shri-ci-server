@@ -2,6 +2,7 @@ import buildModel, { BuildModel } from './models/Build'
 import { QueueBuildConfig, UUID } from './models/types'
 import { repoManager } from './Repo'
 import { queue, QueueObject } from 'async'
+import { yellow } from 'colors'
 
 export interface QueuedBuild {
   id: UUID
@@ -16,6 +17,12 @@ class BuildQueue {
 
   constructor(private concurrent = 1) {
     this.queue = queue(async (task) => {
+      console.log(
+        yellow(
+          `Starting new queue task: ${task.id} on commit: ${task.commitHash}`
+        )
+      )
+
       const repo = await repoManager.getRepoAsync()
 
       await buildModel.reportBuildStarted({
@@ -36,6 +43,14 @@ class BuildQueue {
           duration: Date.now() - buildStartTimestamp,
         },
       })
+
+      console.log(
+        yellow(
+          `Build task complete: ${
+            task.id
+          }, rest in queue ${this.queue.length()}`
+        )
+      )
     }, this.concurrent)
   }
 
@@ -52,7 +67,8 @@ class BuildQueue {
         commitHash: cfg.commitHash,
         buildCommand: repo.params.buildCommand,
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error(err)
         void buildModel
           .reportBuildCanceled({
             data: {
@@ -63,6 +79,14 @@ class BuildQueue {
             // noop
           })
       })
+
+    console.log(
+      yellow(
+        `Add new build to queue ${
+          response.data.data.id
+        }, current queue size ${this.queue.length()}`
+      )
+    )
 
     return response
   }
