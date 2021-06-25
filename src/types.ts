@@ -9,7 +9,7 @@ export interface Build {
   commitHash: string
   branchName: string
   authorName: string
-  status: 'Success' | 'Waiting' | 'Canceled' | 'Fail'
+  status: 'Success' | 'Waiting' | 'InProgress' | 'Canceled' | 'Fail'
   start: string
   duration: number
 }

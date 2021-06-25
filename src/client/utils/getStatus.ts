@@ -9,6 +9,8 @@ export const getStatus = (
       return 'success'
     case 'Waiting':
       return 'wait'
+    case 'InProgress':
+      return 'wait'
     default:
       return 'fail'
   }
