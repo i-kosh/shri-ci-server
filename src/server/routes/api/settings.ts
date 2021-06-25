@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import getSettings from '../controllers/getSettings'
-import saveSettings from '../controllers/saveSettings'
+import getSettings from '../../controllers/getSettings'
+import saveSettings from '../../controllers/saveSettings'
 
 const router = Router()
 

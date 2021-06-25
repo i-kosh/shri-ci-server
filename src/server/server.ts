@@ -1,6 +1,6 @@
 import cfg from './config'
 import express from 'express'
-import apiRouter from './routes'
+import apiRouter from './routes/api'
 import { applyPreMiddlewares, applyFinalMiddlewares } from './middlewares'
 import { repoManager } from './Repo'
 import settingsModel from './models/Settings'
