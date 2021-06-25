@@ -59,12 +59,12 @@ export const BuildList: FunctionComponent = () => {
             <BuildCard
               author={build.authorName}
               commitHash={build.commitHash}
-              duration={build.duration}
+              duration={'duration' in build ? build.duration : undefined}
               mainBranch={build.branchName}
               msg={build.commitMessage}
               number={`${build.buildNumber}`}
               status={getStatus(build.status)}
-              startDate={build.start}
+              startDate={'start' in build ? build.start : undefined}
               path={`/build/${build.id}`}
               selectable
               oneline

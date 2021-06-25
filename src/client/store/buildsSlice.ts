@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from './index'
-import type { Build } from '../../types'
+import type { BuildResponse } from '../../types'
 
 export interface BuildsState {
-  list: Build[]
+  list: BuildResponse[]
 }
 
 const initialState: BuildsState = {

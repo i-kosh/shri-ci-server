@@ -13,8 +13,53 @@ export interface Build {
   start: string
   duration: number
 }
+export type BuildWaitingOrCanceled = Pick<
+  Build,
+  | 'id'
+  | 'configurationId'
+  | 'authorName'
+  | 'branchName'
+  | 'buildNumber'
+  | 'commitHash'
+  | 'commitMessage'
+  | 'status'
+> & {
+  status: 'Waiting' | 'Canceled'
+}
+export type BuildWaiting = BuildWaitingOrCanceled & {
+  status: 'Waiting'
+}
+export type BuildCanceled = BuildWaitingOrCanceled & {
+  status: 'Canceled'
+}
+export type BuildInProgress = Pick<
+  Build,
+  | 'id'
+  | 'configurationId'
+  | 'authorName'
+  | 'branchName'
+  | 'buildNumber'
+  | 'commitHash'
+  | 'commitMessage'
+  | 'status'
+  | 'start'
+> & {
+  status: 'InProgress'
+}
+export type BuildSuccess = Build & {
+  status: 'Success'
+}
+export type BuildFail = Build & {
+  status: 'Fail'
+}
+export type BuildConcatenated =
+  | BuildWaiting
+  | BuildCanceled
+  | BuildInProgress
+  | BuildSuccess
+  | BuildFail
 export type BuildID = string
-export type BuildResponse = Build
+export type BuildResponse = BuildConcatenated
 export interface BuildParams {
   buildId?: string
 }
@@ -28,7 +73,7 @@ export interface BuildListParams {
   offset?: number
   limit?: number
 }
-export type BuildListResponse = Build[]
+export type BuildListResponse = BuildConcatenated[]
 
 // BUildLog
 export type LogResponse = string

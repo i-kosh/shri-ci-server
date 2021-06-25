@@ -60,12 +60,18 @@ export const BuildPage: FunctionComponent = () => {
         <BuildCard
           author={build.data?.authorName}
           commitHash={build.data?.commitHash}
-          duration={build.data?.duration || 0}
+          duration={
+            build.data && 'duration' in build.data
+              ? build.data.duration
+              : undefined
+          }
           number={build.data?.buildNumber}
           msg={build.data?.commitMessage}
           mainBranch={build.data?.branchName}
           status={buildStatus}
-          startDate={build.data?.start || ''}
+          startDate={
+            build.data && 'start' in build.data ? build.data.start : undefined
+          }
         />
         <LogsField className="log" log={log.data} />
       </div>
