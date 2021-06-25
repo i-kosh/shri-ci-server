@@ -178,9 +178,6 @@ export class Repo {
         {
           cwd: this.fullPath,
           shell: true,
-          env: Object.assign({}, process.env, {
-            CI: 'true',
-          }),
         }
       )
 
