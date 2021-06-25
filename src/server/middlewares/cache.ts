@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
 import { getReqId } from '../utils/getSetReqId'
 import { bytesToMB } from '../utils/bytesToMB'
+import { cyan } from 'colors'
 
 interface Cached {
   expires: number
@@ -34,9 +35,11 @@ export function addCache(target: RequestHandler, cfg?: Params): RequestHandler {
     if (bytesToMB(memSize) > cfgParams.cacheSizeMB) mem.clear()
     if (bytesToMB(val.sizeBytes) > cfgParams.itemMaxSizeMB) {
       console.warn(
-        `Item biger than 'itemMaxSizeMB' (${bytesToMB(val.sizeBytes).toFixed(
-          2
-        )} > ${cfgParams.itemMaxSizeMB}) caching skipped`
+        cyan(
+          `Item biger than 'itemMaxSizeMB' (${bytesToMB(val.sizeBytes).toFixed(
+            2
+          )} > ${cfgParams.itemMaxSizeMB}) caching skipped`
+        )
       )
       return
     }
@@ -52,13 +55,15 @@ export function addCache(target: RequestHandler, cfg?: Params): RequestHandler {
 
     if (!cached || cached.expires <= Date.now()) {
       res.json = (body) => {
-        if (!(body instanceof Error)) {
+        if (body && !(body instanceof Error)) {
           const expires = Date.now() + cfgParams.ttl
           const sizeBytes = Buffer.from(`${body}`).byteLength
           console.log(
-            `Caching new data:
+            cyan(
+              `Caching new data:
               exp=${new Date(expires).toUTCString()}
               size=${bytesToMB(sizeBytes).toFixed(2)}mb`
+            )
           )
           memSet(key, {
             data: body,
@@ -71,9 +76,11 @@ export function addCache(target: RequestHandler, cfg?: Params): RequestHandler {
             bytesToMB(memSize)
           ).toFixed(2)
           console.log(
-            `Current cache loading ${loadPrecent}% (${bytesToMB(
-              memSize
-            ).toFixed(2)}mb of ${cfgParams.cacheSizeMB}mb)`
+            cyan(
+              `Current cache loading ${loadPrecent}% (${bytesToMB(
+                memSize
+              ).toFixed(2)}mb of ${cfgParams.cacheSizeMB}mb)`
+            )
           )
         }
 
@@ -82,7 +89,7 @@ export function addCache(target: RequestHandler, cfg?: Params): RequestHandler {
 
       target(req, res, next)
     } else {
-      console.log(`Serving cached data for ${getReqId(req)}`)
+      console.log(cyan(`Serving cached data for ${getReqId(req)}`))
       res.json(cached.data)
     }
   }
