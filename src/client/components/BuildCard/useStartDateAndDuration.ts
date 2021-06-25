@@ -36,6 +36,10 @@ export const useStartDateAndDuration = (
     const hours = Math.floor(durationMinutes / 60)
     const minutes = padZero(Math.floor(durationMinutes % 60), 2)
 
+    if (hours === 0 && minutes === '00') {
+      return 'Less than a minute'
+    }
+
     return `${hours} ч ${minutes} мин`
   }
 
