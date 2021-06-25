@@ -13,13 +13,15 @@ const handler: RequestHandler<
       data: req.body,
     })
 
-    res.status(200).json()
-
-    repoManager.updRepo({
+    const repo = repoManager.updRepo({
       repoLink: req.body.repoName,
       buildCommand: req.body.buildCommand,
       mainBranch: req.body.mainBranch,
     })
+
+    await repo.waitRepoReady()
+
+    res.status(200).json()
   } catch (error) {
     next(error)
   }

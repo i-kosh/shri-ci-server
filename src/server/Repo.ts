@@ -15,8 +15,8 @@ export interface CommitInfo {
 
 export interface RepoParams {
   repoLink: string
-  mainBranch?: string
   buildCommand: string
+  mainBranch?: string
 }
 
 export interface RunBuildReturn {
@@ -31,9 +31,13 @@ export class RepoError extends Error {
 }
 
 export class Repo {
+  /** Флаг сигнализирующий что репозиторий существует (был загружен) в файловой системе */
   public exist: boolean
+  /** Флаг сигнализирующий что дальнейшая работа с репозиторием невозможна */
   public failed: boolean
+  /** Абсолютный путь до репозитория на ФС */
   public fullPath: string
+  /** Имя папки с репозиторием */
   private folderName: string
 
   constructor(public readonly params: RepoParams) {
@@ -48,11 +52,15 @@ export class Repo {
     void this.cloneRepo()
   }
 
+  /**
+   * Проверяет что это директория с гитом
+   * @param path путь до папки с гитом
+   */
   private async isGitDir(path: string): Promise<boolean> {
     try {
-      const gtiStat = await fs.stat(join(path, '.git'))
+      const gitStat = await fs.stat(join(path, '.git'))
 
-      if (gtiStat.isDirectory() && gtiStat.size > 1) {
+      if (gitStat.isDirectory() && gitStat.size > 1) {
         return true
       } else {
         return false
@@ -62,7 +70,11 @@ export class Repo {
     }
   }
 
-  private waitRepoReady(): Promise<void> {
+  /**
+   * Позволяет дождаться момента когда репозиторий будет склонирован
+   * и будет готов к работе
+   */
+  public waitRepoReady(): Promise<void> {
     const interval = 100
     let intervalID: NodeJS.Timeout
 
@@ -70,7 +82,7 @@ export class Repo {
       intervalID = setInterval(() => {
         if (this.failed) {
           clearInterval(intervalID)
-          throw new Error('Repo failed')
+          throw new RepoError('Repo initialization failed')
         }
 
         if (this.exist) {
@@ -90,9 +102,14 @@ export class Repo {
 
   private async cloneRepo(): Promise<void> {
     try {
-      if (this.failed) return
+      if (this.failed) {
+        console.log('Repo failed, abort cloning')
+        return
+      }
+
       if (await this.isGitDir(this.fullPath)) {
         this.exist = true
+        console.log(`Repo already exist ${this.fullPath}, abort cloning`)
         return
       }
 
@@ -100,8 +117,18 @@ export class Repo {
 
       const gitDirCloned = await this.isGitDir(this.fullPath)
       if (!gitDirCloned) {
+        fs.rm(this.fullPath, {
+          recursive: true,
+          force: true,
+          maxRetries: 3,
+        }).catch(() => {
+          // noop
+        })
+
         throw new RepoError('Repository cloning error')
       }
+
+      console.log(`New repo cloned ${this.fullPath}`)
 
       this.exist = true
     } catch (error) {
@@ -175,18 +202,29 @@ class SingleRepoManager {
   private repoLink?: string
   private repoInstanse?: Repo
 
-  updRepo(params: RepoParams) {
-    if (this.repoLink === params.repoLink) return
+  public updRepo(params: RepoParams): Repo {
+    // Если репо с такой ссылкой уже инициализован
+    if (this.repoLink === params.repoLink && this.repoInstanse) {
+      return this.repoInstanse
+    }
 
     this.repoLink = params.repoLink
     this.repoInstanse = new Repo(params)
 
     console.info(`💨 Changed repo to ${params.repoLink}`)
+
+    return this.repoInstanse
   }
 
+  /**
+   * Позволяет асинхронно получить текущий инстанс репозитория.
+   *
+   * Ожидает что в ближайшее время будет/был вызван метод `updRepo`
+   * иначе падает с таймаутом
+   */
   public getRepoAsync(): Promise<Repo> {
-    const maxTimeOut = 1000 * 60 * 1
-    const interval = 100
+    const maxTimeOut = 1000 * 60 * 0.5 // 30s
+    const interval = 100 // ms
     let fullTimeout = 0
 
     return new Promise((resolve, reject) => {
@@ -200,9 +238,14 @@ class SingleRepoManager {
           fullTimeout = fullTimeout + interval
         }
 
+        if (repo?.failed) {
+          clearTimeout(timeout)
+          reject(new RepoError('Repo initialization failed'))
+        }
+
         if (fullTimeout >= maxTimeOut) {
           clearTimeout(timeout)
-          reject(new Error('Repo initialization timeout (1min)'))
+          reject(new RepoError('Repo initialization timeout (30s)'))
         }
       }, interval)
     })
