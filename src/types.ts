@@ -46,13 +46,15 @@ export interface SettingsSaveRequest {
 export type SettingsSaveResponse = undefined
 
 // SettingsGet
-export interface SettingsResponse {
-  id: string
-  repoName: string
-  buildCommand: string
-  mainBranch?: string
-  period?: number
-}
+export type SettingsResponse =
+  | {
+      id: string
+      repoName: string
+      buildCommand: string
+      mainBranch?: string
+      period?: number
+    }
+  | undefined
 
 // Errors
 export interface ErrorResponse {

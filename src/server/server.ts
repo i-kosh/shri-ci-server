@@ -25,13 +25,17 @@ function startServer() {
 
   settingsModel
     .getSettings()
-    .then((settings) => {
-      repoManager.updRepo({
-        repoLink: settings.data.data.repoName,
-        mainBranch: settings.data.data.mainBranch,
-        buildCommand: settings.data.data.buildCommand,
-      })
-      console.info('✔  Repo settings restored...')
+    .then(({ data }) => {
+      if (data.data) {
+        repoManager.updRepo({
+          repoLink: data.data.repoName,
+          mainBranch: data.data.mainBranch,
+          buildCommand: data.data.buildCommand,
+        })
+        console.info('✔  Repo settings restored...')
+      } else {
+        console.log('No settings found')
+      }
     })
     .catch((err) => {
       console.warn(err)

@@ -108,6 +108,6 @@ export type ReportBuildStartedResponse = null
 export type ReportBuildFinishedResponse = null
 export type ReportBuildCanceledResponse = null
 
-export type GetSettingsResponse = DBresponse<SettingsEntity>
+export type GetSettingsResponse = DBresponse<SettingsEntity | undefined>
 export type SetSettingsResponse = null
 export type DeleteSettingsResponse = null
