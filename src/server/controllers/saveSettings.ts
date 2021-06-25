@@ -9,10 +9,6 @@ const handler: RequestHandler<
   SettingsSaveRequest
 > = async (req, res, next) => {
   try {
-    await settingsModel.setSettings({
-      data: req.body,
-    })
-
     const repo = repoManager.updRepo({
       repoLink: req.body.repoName,
       buildCommand: req.body.buildCommand,
@@ -20,6 +16,10 @@ const handler: RequestHandler<
     })
 
     await repo.waitRepoReady()
+
+    await settingsModel.setSettings({
+      data: req.body,
+    })
 
     res.status(200).json()
   } catch (error) {
