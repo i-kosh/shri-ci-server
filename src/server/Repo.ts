@@ -4,6 +4,7 @@ import { join } from 'path'
 import { promisify } from 'util'
 import { v5 as uuidv5 } from 'uuid'
 import fs from 'fs/promises'
+import { yellow, underline, green, red } from 'colors'
 
 const execFileAsync = promisify(execFile)
 
@@ -103,13 +104,15 @@ export class Repo {
   private async cloneRepo(): Promise<void> {
     try {
       if (this.failed) {
-        console.log('Repo failed, abort cloning')
+        console.log(underline('Repo failed, abort cloning'))
         return
       }
 
       if (await this.isGitDir(this.fullPath)) {
         this.exist = true
-        console.log(`Repo already exist ${this.fullPath}, abort cloning`)
+        console.log(
+          underline(`Repo already exist ${this.fullPath}, abort cloning`)
+        )
         return
       }
 
@@ -128,7 +131,7 @@ export class Repo {
         throw new RepoError('Repository cloning error')
       }
 
-      console.log(`New repo cloned ${this.fullPath}`)
+      console.log(underline(`New repo cloned ${this.fullPath}`))
 
       this.exist = true
     } catch (error) {
@@ -172,7 +175,13 @@ export class Repo {
       await this.waitRepoReady()
       await this.checkout(commitHash)
 
-      // TODO: санитизировать buildCommand
+      console.log(
+        yellow(
+          `Running build command "${this.params.buildCommand}" on repo ${this.params.repoLink}`
+        )
+      )
+
+      // TODO: санитизировать buildCommand?
       const { stderr, stdout } = await execFileAsync(
         `${this.params.buildCommand}`,
         {
@@ -187,6 +196,12 @@ export class Repo {
       log = `${log}\n${error}`
       success = false
     }
+
+    const result = success ? 'completed' : 'failed'
+    const resultColor = success ? green : red
+    console.log(
+      resultColor(`Build command "${this.params.buildCommand}" - ${result}`)
+    )
 
     return {
       log,
@@ -229,15 +244,15 @@ class SingleRepoManager {
         const repo = this.repoInstanse ? this.repoInstanse : null
 
         if (repo) {
-          clearTimeout(timeout)
-          resolve(repo)
+          if (repo.failed) {
+            clearTimeout(timeout)
+            reject(new RepoError('Repo initialization failed'))
+          } else {
+            clearTimeout(timeout)
+            resolve(repo)
+          }
         } else {
           fullTimeout = fullTimeout + interval
-        }
-
-        if (repo?.failed) {
-          clearTimeout(timeout)
-          reject(new RepoError('Repo initialization failed'))
         }
 
         if (fullTimeout >= maxTimeOut) {
