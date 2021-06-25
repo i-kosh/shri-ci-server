@@ -9,6 +9,7 @@ import { ReactComponent as TimeSvg } from '../../assets/time.svg'
 import classnames from 'classnames'
 import { useHistory } from 'react-router-dom'
 import './style.scss'
+import { padZero } from '../../utils/padZero'
 
 export interface BuildCardProps {
   status: 'success' | 'wait' | 'fail'
@@ -72,13 +73,13 @@ export const BuildCard: FC<BuildCardProps> = (props) => {
 
     return `${date.getDate()} ${
       monthsRU[date.getMonth()]
-    }, ${date.getHours()}:${date.getMinutes()}`
+    }, ${date.getHours()}:${padZero(date.getMinutes(), 2)}`
   }
   const getDurationString = () => {
     const durationMinutes = parseInt(`${duration}`) / 1000 / 60
 
     const hours = Math.floor(durationMinutes / 60)
-    const minutes = Math.floor(durationMinutes % 60)
+    const minutes = padZero(Math.floor(durationMinutes % 60), 2)
 
     return `${hours} ч ${minutes} мин`
   }
