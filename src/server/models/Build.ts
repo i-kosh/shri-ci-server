@@ -27,7 +27,6 @@ export class BuildModel extends DB {
     })
   }
 
-  // TODO: сервер возвращает чанки
   public async getBuildLog(
     cfg?: GetBuildLogConfig
   ): Promise<AxiosResponse<GetBuildLogResponse>> {
