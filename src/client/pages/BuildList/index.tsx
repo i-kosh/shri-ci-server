@@ -53,25 +53,29 @@ export const BuildList: FunctionComponent = () => {
 
   return (
     <DefaultLayout addButtons={settingsButton} title={settings.reponame}>
-      <ul className="build-list">
-        {buildList.map((build) => (
-          <li className="build-list__item" key={build.id}>
-            <BuildCard
-              author={build.authorName}
-              commitHash={build.commitHash}
-              duration={'duration' in build ? build.duration : undefined}
-              mainBranch={build.branchName}
-              msg={build.commitMessage}
-              number={`${build.buildNumber}`}
-              status={getStatus(build.status)}
-              startDate={'start' in build ? build.start : undefined}
-              path={`/build/${build.id}`}
-              selectable
-              oneline
-            ></BuildCard>
-          </li>
-        ))}
-      </ul>
+      {buildList.length ? (
+        <ul className="build-list">
+          {buildList.map((build) => (
+            <li className="build-list__item" key={build.id}>
+              <BuildCard
+                author={build.authorName}
+                commitHash={build.commitHash}
+                duration={'duration' in build ? build.duration : undefined}
+                mainBranch={build.branchName}
+                msg={build.commitMessage}
+                number={`${build.buildNumber}`}
+                status={getStatus(build.status)}
+                startDate={'start' in build ? build.start : undefined}
+                path={`/build/${build.id}`}
+                selectable
+                oneline
+              ></BuildCard>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="build-list__no-builds">No builds yet</p>
+      )}
 
       {!noMoreBuilds && (
         <Button

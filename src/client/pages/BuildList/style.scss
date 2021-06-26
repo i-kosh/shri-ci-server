@@ -43,6 +43,14 @@
   }
 }
 
+.build-list__no-builds {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 12px;
+  text-align: center;
+  color: var(--color-text-second);
+}
+
 .newbuild {
   max-width: 485px;
   width: 100%;
