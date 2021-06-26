@@ -14,7 +14,13 @@ export const useBuildList = () => {
   const loadingLimit = 25
   const dispatch = useAppDispatch()
   const buildList = useAppSelector(selectBuildsList)
-  const result = useFetchBuildsListQuery({ limit: loadingLimit })
+  const result = useFetchBuildsListQuery(
+    { limit: loadingLimit },
+    {
+      // Пока придется без кеша, т.к непонятно как инвалидировать если изменился статус билда
+      refetchOnMountOrArgChange: true,
+    }
+  )
   const [fetchBuilds, lazyResult] = useLazyFetchBuildsListQuery()
 
   useEffect(() => {

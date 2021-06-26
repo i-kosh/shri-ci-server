@@ -21,6 +21,7 @@ import { useWasTrue } from '../../hooks/useWasTrue'
 export const BuildPage: FunctionComponent = () => {
   const settings = useAppSelector(selectSettings)
   const { buildId } = useParams<{ buildId: string }>()
+  // Тут тоже пока без кеша т.к непонятно как и когда инвалидировать его
   const build = useFetchBuildQuery(buildId, { refetchOnMountOrArgChange: true })
   const buildStatus = getStatus(build.data?.status || 'Waiting')
   const log = useFetchBuildLogQuery(buildId)
