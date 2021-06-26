@@ -10,9 +10,9 @@ const handler: RequestHandler<
 > = async (req, res, next) => {
   try {
     const repo = repoManager.updRepo({
-      repoLink: req.body.repoName,
-      buildCommand: req.body.buildCommand,
-      mainBranch: req.body.mainBranch,
+      repoName: req.body.repoName.trim(),
+      buildCommand: req.body.buildCommand.trim(),
+      mainBranch: req.body.mainBranch?.trim(),
     })
 
     await repo.waitRepoReady()

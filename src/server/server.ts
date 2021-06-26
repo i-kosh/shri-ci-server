@@ -28,7 +28,7 @@ function startServer() {
     .then(({ data }) => {
       if (data.data) {
         repoManager.updRepo({
-          repoLink: data.data.repoName,
+          repoName: data.data.repoName,
           mainBranch: data.data.mainBranch,
           buildCommand: data.data.buildCommand,
         })
