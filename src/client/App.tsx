@@ -9,6 +9,9 @@ import { useLoadSettingsQuery } from './store/settingsApi'
 import { useAppDispatch } from './store/hooks'
 import { setSettings, selectSettings } from './store/settingsSlice'
 import { useAppSelector } from './store/hooks'
+import { ScrollToTop } from './components/ScrollToTop'
+import { ToastDock } from './components/ToastBox'
+import { ModalDock } from './components/Modal'
 
 function App(): JSX.Element {
   const dispatch = useAppDispatch()
@@ -43,29 +46,30 @@ function App(): JSX.Element {
     </Switch>
   )
 
+  const ifSettings = (
+    <Switch>
+      <Route exact path="/">
+        <BuildList />
+      </Route>
+      <Route exact path="/build/:buildId">
+        <BuildPage />
+      </Route>
+      <Route exact path="/settings">
+        <SettingsPage />
+      </Route>
+      <Route>
+        <NotFound />
+      </Route>
+    </Switch>
+  )
+
   return (
     <>
-      {!isSettingsExistAndLoaded ? (
-        ifNoStettings
-      ) : (
-        <Switch>
-          <Route exact path="/">
-            <BuildList />
-          </Route>
-
-          <Route exact path="/build/:buildId">
-            <BuildPage />
-          </Route>
-
-          <Route exact path="/settings">
-            <SettingsPage />
-          </Route>
-
-          <Route>
-            <NotFound />
-          </Route>
-        </Switch>
-      )}
+      <ScrollToTop />
+      <ToastDock>
+        {!isSettingsExistAndLoaded ? ifNoStettings : ifSettings}
+      </ToastDock>
+      <ModalDock />
     </>
   )
 }

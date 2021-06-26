@@ -8,6 +8,15 @@ export interface ModalProps {
   open: boolean
 }
 
+export const ModalDock: FC = ({ children }) => {
+  return (
+    <>
+      {children}
+      <div id="modal-dock"></div>
+    </>
+  )
+}
+
 export const Modal: FC<ModalProps> = (props) => {
   const { children, nativeProps, open } = props
 
