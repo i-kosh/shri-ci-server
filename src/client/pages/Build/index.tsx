@@ -14,6 +14,7 @@ import {
 } from '../../store/buildsApi'
 import { getStatus } from '../../utils/getStatus'
 import { useQueueBuild } from '../../hooks/useQueueBuild'
+import { Spinner } from '../../components/Spinner'
 
 export const BuildPage: FunctionComponent = () => {
   const settings = useAppSelector(selectSettings)
@@ -71,34 +72,40 @@ export const BuildPage: FunctionComponent = () => {
 
   return (
     <DefaultLayout title={settings.reponame} addButtons={settingsButton}>
-      <div className="build-page">
-        <BuildCard
-          author={build.data?.authorName}
-          commitHash={build.data?.commitHash}
-          duration={
-            build.data && 'duration' in build.data
-              ? build.data.duration
-              : undefined
-          }
-          number={build.data?.buildNumber}
-          msg={build.data?.commitMessage}
-          mainBranch={build.data?.branchName}
-          status={buildStatus}
-          startDate={
-            build.data && 'start' in build.data ? build.data.start : undefined
-          }
-        />
-        <LogsField
-          className="log"
-          log={
-            log.isFetching
-              ? 'Log is loading...'
-              : log.data
-              ? log.data
-              : 'Log is not ready yet'
-          }
-        />
-      </div>
+      {build.isLoading ? (
+        <div className="build-page-loader">
+          <Spinner />
+        </div>
+      ) : (
+        <div className="build-page">
+          <BuildCard
+            author={build.data?.authorName}
+            commitHash={build.data?.commitHash}
+            duration={
+              build.data && 'duration' in build.data
+                ? build.data.duration
+                : undefined
+            }
+            number={build.data?.buildNumber}
+            msg={build.data?.commitMessage}
+            mainBranch={build.data?.branchName}
+            status={buildStatus}
+            startDate={
+              build.data && 'start' in build.data ? build.data.start : undefined
+            }
+          />
+          <LogsField
+            className="log"
+            log={
+              log.isFetching
+                ? 'Log is loading...'
+                : log.data
+                ? log.data
+                : 'Log is not ready yet'
+            }
+          />
+        </div>
+      )}
     </DefaultLayout>
   )
 }
