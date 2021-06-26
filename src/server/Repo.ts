@@ -194,6 +194,10 @@ export class Repo {
         {
           cwd: this.fullPath,
           shell: true,
+          env: {
+            ...process.env,
+            FORCE_COLOR: 'true',
+          },
         }
       )
 
