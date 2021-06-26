@@ -4,11 +4,9 @@
     "allowSyntheticDefaultImports": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "moduleResolution": "node",
-    "isolatedModules": true,
-    "jsx": "react-jsx"
+    "moduleResolution": "node"
   },
-  "exclude": ["./src/server"],
-  "include": ["./src/client/*", "./src/client/**/*.d.ts"]
+  "ts-node": {
+    "transpileOnly": true
+  }
 }

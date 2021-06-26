@@ -32,10 +32,10 @@
     "dev:server": "cross-env NODE_ENV=development nodemon",
     "dev:client": "shx rm -rf dist/static dist/index.html && cross-env NODE_ENV=development webpack --mode development -c webpack.client.ts -w",
     "build": "shx rm -rf dist && npm run build:client && npm run build:server",
-    "build:server": "shx rm -rf dist/server && tsc --build tsconfig.server.json",
+    "build:server": "shx rm -rf dist/server && tsc --build ./src/server/tsconfig.json",
     "build:client": "shx rm -rf dist/static dist/index.html && webpack --progress --mode production -c webpack.client.ts",
     "lint": "eslint src/**/*.{ts,tsx} && stylelint src/client/**/*.{css,scss}",
-    "test": "npm run lint && tsc --pretty --noEmit --project tsconfig.json && tsc --pretty --noEmit --project tsconfig.server.json",
+    "test": "npm run lint && tsc --pretty --noEmit --project ./src/client/tsconfig.json && tsc --pretty --noEmit --project ./src/server/tsconfig.json",
     "prepare": "husky install"
   },
   "dependencies": {
