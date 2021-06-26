@@ -76,9 +76,9 @@ export const BuildList: FunctionComponent = () => {
           ))}
         </ul>
       ) : isLoading ? (
-        <p className="build-list__no-builds">
+        <div className="build-list__no-builds">
           <Spinner />
-        </p>
+        </div>
       ) : (
         <p className="build-list__no-builds">No builds yet</p>
       )}
