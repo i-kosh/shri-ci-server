@@ -82,6 +82,7 @@ export interface LogParams {
 }
 
 // Settings Save
+// TODO: mainBranch На самом деле обязателен
 export interface SettingsSaveRequest {
   buildCommand: string
   mainBranch?: string
