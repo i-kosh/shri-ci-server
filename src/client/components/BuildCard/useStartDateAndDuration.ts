@@ -9,23 +9,38 @@ export const useStartDateAndDuration = (
   const getStartDateString = () => {
     if (!date) return ''
 
-    const monthsRU = [
-      'янв',
-      'фев',
-      'мар',
-      'апр',
-      'май',
-      'июн',
-      'июл',
-      'авг',
-      'сен',
-      'окт',
-      'ноя',
-      'дек',
+    // const monthsRU = [
+    //   'янв',
+    //   'фев',
+    //   'мар',
+    //   'апр',
+    //   'май',
+    //   'июн',
+    //   'июл',
+    //   'авг',
+    //   'сен',
+    //   'окт',
+    //   'ноя',
+    //   'дек',
+    // ]
+
+    const monthsEN = [
+      'jan',
+      'feb',
+      'mar',
+      'apr',
+      'may',
+      'jun',
+      'jul',
+      'aug',
+      'sept',
+      'oct',
+      'nov',
+      'dec',
     ]
 
     return `${date.getDate()} ${
-      monthsRU[date.getMonth()]
+      monthsEN[date.getMonth()]
     }, ${date.getHours()}:${padZero(date.getMinutes(), 2)}`
   }
   const getDurationString = () => {
@@ -40,7 +55,7 @@ export const useStartDateAndDuration = (
       return 'Less than a minute'
     }
 
-    return `${hours} ч ${minutes} мин`
+    return `${hours} h ${minutes} min`
   }
 
   return {
