@@ -15,7 +15,7 @@ export interface CommitInfo {
 }
 
 export interface RepoParams {
-  repoLink: string
+  repoName: string
   buildCommand: string
   mainBranch?: string
 }
@@ -42,15 +42,19 @@ export class Repo {
   public fullPath: string
   /** Имя папки с репозиторием */
   private folderName: string
+  /** Ссылка на репозиторий */
+  private repoLink: string
 
   constructor(public readonly params: RepoParams) {
     this.failed = false
     this.exist = false
     this.folderName = uuidv5(
-      params.repoLink,
+      params.repoName,
       '5235fde0-caf5-11eb-878d-7303d56e8e0a'
     )
     this.fullPath = join(tmpdir(), this.folderName)
+    // Предпологаем что repoLink это валидный гитхаб репозиторий
+    this.repoLink = `git@github.com:${this.params.repoName}.git`
 
     void this.cloneRepo()
   }
@@ -119,7 +123,7 @@ export class Repo {
         return
       }
 
-      await execFileAsync('git', ['clone', this.params.repoLink, this.fullPath])
+      await execFileAsync('git', ['clone', this.repoLink, this.fullPath])
 
       const gitDirCloned = await this.isGitDir(this.fullPath)
       if (!gitDirCloned) {
@@ -185,7 +189,7 @@ export class Repo {
 
       console.log(
         yellow(
-          `Running build command "${this.params.buildCommand}" on repo ${this.params.repoLink}`
+          `Running build command "${this.params.buildCommand}" on repo ${this.params.repoName}`
         )
       )
 
@@ -227,10 +231,10 @@ class SingleRepoManager {
   private repoInstanse?: Repo
 
   public updRepo(params: RepoParams): Repo {
-    this.repoLink = params.repoLink
+    this.repoLink = params.repoName
     this.repoInstanse = new Repo(params)
 
-    console.info(`💨 Update repo to ${params.repoLink}`)
+    console.info(`💨 Update repo to ${params.repoName}`)
 
     return this.repoInstanse
   }
