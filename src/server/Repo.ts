@@ -36,6 +36,8 @@ export class Repo {
   public exist: boolean
   /** Флаг сигнализирующий что дальнейшая работа с репозиторием невозможна */
   public failed: boolean
+  /** Текст ошибки */
+  public failedMsg?: string
   /** Абсолютный путь до репозитория на ФС */
   public fullPath: string
   /** Имя папки с репозиторием */
@@ -79,11 +81,11 @@ export class Repo {
     const interval = 100
     let intervalID: NodeJS.Timeout
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       intervalID = setInterval(() => {
         if (this.failed) {
           clearInterval(intervalID)
-          throw new RepoError('Repo initialization failed')
+          reject(new RepoError(this.failedMsg || 'Repo initialization failed'))
         }
 
         if (this.exist) {
@@ -137,6 +139,11 @@ export class Repo {
     } catch (error) {
       this.exist = false
       this.failed = true
+
+      if (error instanceof Error) {
+        this.failedMsg = error.message
+      }
+
       console.error(error)
     }
   }
