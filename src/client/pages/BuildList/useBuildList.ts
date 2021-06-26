@@ -1,26 +1,44 @@
 import { useEffect } from 'react'
-import { useLazyFetchBuildsListQuery } from '../../store/buildsApi'
-import { selectBuildsList, addBuildsList } from '../../store/buildsSlice'
+import {
+  useLazyFetchBuildsListQuery,
+  useFetchBuildsListQuery,
+} from '../../store/buildsApi'
+import {
+  selectBuildsList,
+  addBuildsList,
+  setBuildsList,
+} from '../../store/buildsSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 
 export const useBuildList = () => {
   const loadingLimit = 25
   const dispatch = useAppDispatch()
   const buildList = useAppSelector(selectBuildsList)
-  const [fetchBuilds, { data, isUninitialized }] = useLazyFetchBuildsListQuery()
+  const result = useFetchBuildsListQuery({ limit: loadingLimit })
+  const [fetchBuilds, lazyResult] = useLazyFetchBuildsListQuery()
 
   useEffect(() => {
-    if (!buildList.length && isUninitialized)
-      fetchBuilds({ limit: loadingLimit })
-
-    if (data) {
-      dispatch(addBuildsList(data))
+    if (result.data) {
+      dispatch(setBuildsList(result.data))
     }
-  }, [data])
+  }, [result.data])
+
+  useEffect(() => {
+    if (lazyResult.data) {
+      dispatch(addBuildsList(lazyResult.data))
+    }
+  }, [lazyResult.data])
+
+  const lazyDataLessWhenLimit =
+    lazyResult.data && lazyResult.data.length < loadingLimit
+  const dataLessWhenLimit = result.data && result.data.length < loadingLimit
 
   return {
     fetchBuilds,
-    noMoreBuilds: data && data.length < loadingLimit,
+    noMoreBuilds:
+      buildList.length < loadingLimit ||
+      dataLessWhenLimit ||
+      lazyDataLessWhenLimit,
     buildList,
     loadingLimit,
   }
