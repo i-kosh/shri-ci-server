@@ -1,7 +1,7 @@
 import React, { FunctionComponent, ReactNode } from 'react'
 import { PageContainer } from '../../components/PageContainer'
 import { ButtonRouter } from '../../components/ButtonRouter'
-import { useRouteMatch } from 'react-router-dom'
+import { useRouteMatch, Link } from 'react-router-dom'
 import classNames from 'classnames'
 import './style.scss'
 import { ReactComponent as CogSvg } from '../../assets/cog.svg'
@@ -46,8 +46,9 @@ export const DefaultLayout: FunctionComponent<DefaultLayoutProps> = ({
       <header>
         <PageContainer>
           <div className="page__header">
-            <h1 className={titleClasses}>{headerTitle}</h1>
-
+            <Link className="page__header-link" to="/">
+              <h1 className={titleClasses}>{headerTitle}</h1>
+            </Link>
             <div className="page__buttons">
               {addButtons}
               {settingsButton}
