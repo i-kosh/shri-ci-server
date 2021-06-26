@@ -62,3 +62,51 @@ body {
     color: #e00000;
   }
 }
+
+@keyframes initSpinnerAnim {
+  0% {
+    fill-opacity: 0.66;
+  }
+  100% {
+    fill-opacity: 1;
+  }
+}
+
+.init-spinner {
+  $anim-time: 0.6s;
+  $anim-time-del: 0.3s;
+
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-main);
+  transition-property: visibility;
+  transition-timing-function: linear;
+  transition-duration: $anim-time;
+  transition-delay: $anim-time-del;
+
+  svg {
+    animation-name: initSpinnerAnim;
+    animation-iteration-count: infinite;
+    animation-direction: alternate-reverse;
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    fill: var(--color-bg-action);
+    transition-delay: $anim-time-del;
+    transition-property: visibility, transform, opacity;
+    transition-timing-function: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+    transition-duration: $anim-time;
+  }
+
+  &--hidden {
+    visibility: hidden;
+
+    svg {
+      opacity: 0;
+      transform: scale(0);
+    }
+  }
+}

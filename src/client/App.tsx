@@ -17,9 +17,15 @@ function App(): JSX.Element {
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectSettings)
   const isSettings = settings.reponame && settings.command
-  const { data, error } = useLoadSettingsQuery(null)
+  const { data, error, isLoading } = useLoadSettingsQuery(null)
 
   useEffect(() => {
+    // Убираем спиннер
+    const initSpinner = document.querySelector('#init-spinner')
+    if (initSpinner) {
+      initSpinner.classList.add('init-spinner--hidden')
+    }
+
     if (!error && data?.repoName && data?.buildCommand) {
       dispatch(
         setSettings({
@@ -38,7 +44,7 @@ function App(): JSX.Element {
       <ToastDock>
         <Switch>
           <Route exact path="/">
-            {isSettings ? <BuildList /> : <NoSettings />}
+            {isSettings ? <BuildList /> : !isLoading ? <NoSettings /> : ''}
           </Route>
           <Route exact path="/build/:buildId">
             <BuildPage />
