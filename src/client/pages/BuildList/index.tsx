@@ -15,7 +15,8 @@ import './style.scss'
 
 export const BuildList: FunctionComponent = () => {
   const settings = useAppSelector(selectSettings)
-  const { buildList, noMoreBuilds, fetchBuilds, loadingLimit } = useBuildList()
+  const { buildList, noMoreBuilds, fetchBuilds, loadingLimit, isLoading } =
+    useBuildList()
   const [isModalOpen, setModalOpen] = useState(false)
   const { queueNewBuild } = useQueueBuild()
   const newBuildRef = useRef<string | number>('')
@@ -73,6 +74,8 @@ export const BuildList: FunctionComponent = () => {
             </li>
           ))}
         </ul>
+      ) : isLoading ? (
+        <p className="build-list__no-builds">Loading...</p>
       ) : (
         <p className="build-list__no-builds">No builds yet</p>
       )}

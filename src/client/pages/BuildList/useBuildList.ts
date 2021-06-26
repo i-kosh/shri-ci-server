@@ -41,5 +41,6 @@ export const useBuildList = () => {
       lazyDataLessWhenLimit,
     buildList,
     loadingLimit,
+    isLoading: result.isLoading,
   }
 }
