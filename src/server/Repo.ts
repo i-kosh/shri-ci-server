@@ -227,15 +227,10 @@ class SingleRepoManager {
   private repoInstanse?: Repo
 
   public updRepo(params: RepoParams): Repo {
-    // Если репо с такой ссылкой уже инициализован
-    if (this.repoLink === params.repoLink && this.repoInstanse) {
-      return this.repoInstanse
-    }
-
     this.repoLink = params.repoLink
     this.repoInstanse = new Repo(params)
 
-    console.info(`💨 Changed repo to ${params.repoLink}`)
+    console.info(`💨 Update repo to ${params.repoLink}`)
 
     return this.repoInstanse
   }
