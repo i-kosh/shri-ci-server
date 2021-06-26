@@ -4,7 +4,7 @@ import { BuildPage } from './pages/Build'
 import { SettingsPage } from './pages/Settings'
 import { BuildList } from './pages/BuildList'
 import { NotFound } from './pages/404'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 import { useLoadSettingsQuery } from './store/settingsApi'
 import { useAppDispatch } from './store/hooks'
 import { setSettings, selectSettings } from './store/settingsSlice'
@@ -16,7 +16,7 @@ import { ModalDock } from './components/Modal'
 function App(): JSX.Element {
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectSettings)
-  const isSettingsExistAndLoaded = settings.reponame && settings.command
+  const isSettings = settings.reponame && settings.command
   const { data, error } = useLoadSettingsQuery(null)
 
   useEffect(() => {
@@ -32,42 +32,24 @@ function App(): JSX.Element {
     }
   }, [data, error])
 
-  const ifNoStettings = (
-    <Switch>
-      <Route exact path="/">
-        <NoSettings />
-      </Route>
-
-      <Route exact path="/settings">
-        <SettingsPage />
-      </Route>
-
-      <Redirect to="/" />
-    </Switch>
-  )
-
-  const ifSettings = (
-    <Switch>
-      <Route exact path="/">
-        <BuildList />
-      </Route>
-      <Route exact path="/build/:buildId">
-        <BuildPage />
-      </Route>
-      <Route exact path="/settings">
-        <SettingsPage />
-      </Route>
-      <Route>
-        <NotFound />
-      </Route>
-    </Switch>
-  )
-
   return (
     <>
       <ScrollToTop />
       <ToastDock>
-        {!isSettingsExistAndLoaded ? ifNoStettings : ifSettings}
+        <Switch>
+          <Route exact path="/">
+            {isSettings ? <BuildList /> : <NoSettings />}
+          </Route>
+          <Route exact path="/build/:buildId">
+            <BuildPage />
+          </Route>
+          <Route exact path="/settings">
+            <SettingsPage />
+          </Route>
+          <Route>
+            <NotFound />
+          </Route>
+        </Switch>
       </ToastDock>
       <ModalDock />
     </>
