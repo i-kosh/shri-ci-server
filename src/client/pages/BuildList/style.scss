@@ -47,8 +47,10 @@
   font-size: 15px;
   font-weight: 500;
   padding: 12px;
-  text-align: center;
   color: var(--color-text-second);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .newbuild {

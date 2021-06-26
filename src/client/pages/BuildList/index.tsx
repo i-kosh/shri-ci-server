@@ -11,6 +11,7 @@ import { selectSettings } from '../../store/settingsSlice'
 import { getStatus } from '../../utils/getStatus'
 import { useBuildList } from './useBuildList'
 import { useQueueBuild } from '../../hooks/useQueueBuild'
+import { Spinner } from '../../components/Spinner'
 import './style.scss'
 
 export const BuildList: FunctionComponent = () => {
@@ -75,7 +76,9 @@ export const BuildList: FunctionComponent = () => {
           ))}
         </ul>
       ) : isLoading ? (
-        <p className="build-list__no-builds">Loading...</p>
+        <p className="build-list__no-builds">
+          <Spinner />
+        </p>
       ) : (
         <p className="build-list__no-builds">No builds yet</p>
       )}
