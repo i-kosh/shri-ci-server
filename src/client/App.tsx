@@ -46,7 +46,7 @@ function App(): JSX.Element {
           <Route exact path="/settings">
             <SettingsPage />
           </Route>
-          <Route>
+          <Route path="*">
             <NotFound />
           </Route>
         </Switch>
