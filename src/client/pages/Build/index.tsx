@@ -15,6 +15,8 @@ import {
 import { getStatus } from '../../utils/getStatus'
 import { useQueueBuild } from '../../hooks/useQueueBuild'
 import { Spinner } from '../../components/Spinner'
+import classNames from 'classnames'
+import { useWasTrue } from '../../hooks/useWasTrue'
 
 export const BuildPage: FunctionComponent = () => {
   const settings = useAppSelector(selectSettings)
@@ -24,6 +26,8 @@ export const BuildPage: FunctionComponent = () => {
   const log = useFetchBuildLogQuery(buildId)
   const { queueNewBuild } = useQueueBuild()
   const history = useHistory()
+
+  const isWasLoading = useWasTrue(build.isLoading)
 
   useEffect(() => {
     // Отвратительно зато работает
@@ -77,7 +81,12 @@ export const BuildPage: FunctionComponent = () => {
           <Spinner />
         </div>
       ) : (
-        <div className="build-page">
+        <div
+          className={classNames({
+            'build-page': true,
+            appear: isWasLoading,
+          })}
+        >
           <BuildCard
             author={build.data?.authorName}
             commitHash={build.data?.commitHash}

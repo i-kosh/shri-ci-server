@@ -13,6 +13,8 @@ import { useBuildList } from './useBuildList'
 import { useQueueBuild } from '../../hooks/useQueueBuild'
 import { Spinner } from '../../components/Spinner'
 import './style.scss'
+import { useWasTrue } from '../../hooks/useWasTrue'
+import classNames from 'classnames'
 
 export const BuildList: FunctionComponent = () => {
   const settings = useAppSelector(selectSettings)
@@ -21,6 +23,8 @@ export const BuildList: FunctionComponent = () => {
   const [isModalOpen, setModalOpen] = useState(false)
   const { queueNewBuild } = useQueueBuild()
   const newBuildRef = useRef<string | number>('')
+
+  const itWasLoading = useWasTrue(isLoading)
 
   const settingsButton = (
     <>
@@ -56,7 +60,12 @@ export const BuildList: FunctionComponent = () => {
   return (
     <DefaultLayout addButtons={settingsButton} title={settings.reponame}>
       {buildList.length ? (
-        <ul className="build-list">
+        <ul
+          className={classNames({
+            'build-list': true,
+            appear: itWasLoading,
+          })}
+        >
           {buildList.map((build) => (
             <li className="build-list__item" key={build.id}>
               <BuildCard

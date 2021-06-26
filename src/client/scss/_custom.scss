@@ -110,3 +110,20 @@ body {
     }
   }
 }
+
+@keyframes appear-animation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.appear {
+  animation-name: appear-animation;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: cubic-bezier(0.83, 0, 0.17, 1);
+}
