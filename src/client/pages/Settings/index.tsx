@@ -23,7 +23,7 @@ export const SettingsPage: FunctionComponent = () => {
     if (error) {
       const err = extractError(error)
 
-      toastsCtx?.add(3000, {
+      toastsCtx?.add(5000, {
         msg: {
           text: err.message,
           props: {
