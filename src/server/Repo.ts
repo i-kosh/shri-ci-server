@@ -101,6 +101,7 @@ export class Repo {
     await execFileAsync('git', ['checkout', '-f', to], {
       cwd: this.fullPath,
     })
+    console.log(yellow(`Checkout repo to ${to}`))
   }
 
   private async cloneRepo(): Promise<void> {
