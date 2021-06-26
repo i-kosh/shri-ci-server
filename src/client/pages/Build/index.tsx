@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect } from 'react'
 import { DefaultLayout } from '../../layouts/Default'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { BuildCard } from '../../components/BuildCard'
 import { Button } from '../../components/Button'
 import { ReactComponent as ReloadSvg } from '../../assets/reload.svg'
@@ -22,6 +22,14 @@ export const BuildPage: FunctionComponent = () => {
   const buildStatus = getStatus(build.data?.status || 'Waiting')
   const log = useFetchBuildLogQuery(buildId)
   const { queueNewBuild } = useQueueBuild()
+  const history = useHistory()
+
+  useEffect(() => {
+    // Отвратительно зато работает
+    if ((build.isSuccess && !build.data) || build.isError) {
+      history.replace('/')
+    }
+  }, [build.data, build.isSuccess, build.isError])
 
   useEffect(() => {
     if (!log.isUninitialized && log.isSuccess && !log.data) {

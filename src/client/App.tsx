@@ -46,11 +46,11 @@ function App(): JSX.Element {
           <Route exact path="/">
             {isSettings ? <BuildList /> : !isLoading ? <NoSettings /> : ''}
           </Route>
-          <Route exact path="/build/:buildId">
-            <BuildPage />
-          </Route>
           <Route exact path="/settings">
             <SettingsPage />
+          </Route>
+          <Route exact path="/build/:buildId">
+            <BuildPage />
           </Route>
           <Route path="*">
             <NotFound />
