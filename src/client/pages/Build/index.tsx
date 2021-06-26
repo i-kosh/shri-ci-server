@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useEffect } from 'react'
 import { DefaultLayout } from '../../layouts/Default'
 import { useParams } from 'react-router-dom'
 import { BuildCard } from '../../components/BuildCard'
@@ -18,10 +18,17 @@ import { useQueueBuild } from '../../hooks/useQueueBuild'
 export const BuildPage: FunctionComponent = () => {
   const settings = useAppSelector(selectSettings)
   const { buildId } = useParams<{ buildId: string }>()
-  const build = useFetchBuildQuery(buildId)
+  const build = useFetchBuildQuery(buildId, { refetchOnMountOrArgChange: true })
   const buildStatus = getStatus(build.data?.status || 'Waiting')
   const log = useFetchBuildLogQuery(buildId)
   const { queueNewBuild } = useQueueBuild()
+
+  useEffect(() => {
+    if (!log.isUninitialized && log.isSuccess && !log.data) {
+      // Перезагрузка лога если был закеширован пустой лог
+      log.refetch()
+    }
+  }, [buildId])
 
   const settingsButton = (
     <>
@@ -73,7 +80,16 @@ export const BuildPage: FunctionComponent = () => {
             build.data && 'start' in build.data ? build.data.start : undefined
           }
         />
-        <LogsField className="log" log={log.data} />
+        <LogsField
+          className="log"
+          log={
+            log.isFetching
+              ? 'Log is loading...'
+              : log.data
+              ? log.data
+              : 'Log is not ready yet'
+          }
+        />
       </div>
     </DefaultLayout>
   )
