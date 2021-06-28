@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit'
 import speedLimiter from 'express-slow-down'
 import { setReqId, getReqId } from '../utils/getSetReqId'
 import { v4 as uuidv4 } from 'uuid'
+import { ServerError } from '../ServerError'
 
 export const applyPreMiddlewares = (app: Express): void => {
   app.use(
@@ -57,6 +58,12 @@ export const applyPreMiddlewares = (app: Express): void => {
       ].join(' ')
     })
   )
+}
+
+export const applyAfterMiddlewares = (app: Express): void => {
+  app.use((req, res, next) => {
+    next(new ServerError({ status: 404, message: 'Not Found' }))
+  })
 }
 
 export const applyFinalMiddlewares = (app: Express): void => {

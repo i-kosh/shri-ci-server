@@ -1,7 +1,11 @@
 import cfg from './config'
 import express from 'express'
 import apiRouter from './routes/api'
-import { applyPreMiddlewares, applyFinalMiddlewares } from './middlewares'
+import {
+  applyPreMiddlewares,
+  applyFinalMiddlewares,
+  applyAfterMiddlewares,
+} from './middlewares'
 import { repoManager } from './Repo'
 import settingsModel from './models/Settings'
 import { resolve } from 'path'
@@ -15,9 +19,10 @@ applyPreMiddlewares(app)
 
 app.use('/api', apiRouter)
 app.use('/static', express.static(pathToStatic))
-app.use('*', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(resolve(pathToStatic, '../index.html'))
 })
+applyAfterMiddlewares(app)
 applyFinalMiddlewares(app)
 
 function startServer() {
