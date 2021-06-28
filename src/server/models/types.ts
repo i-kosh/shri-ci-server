@@ -63,7 +63,8 @@ export type ReportBuildCanceledConfig = DBReqConfig & {
 export type SetSettingsConfig = DBReqConfig & {
   data: {
     buildCommand: string
-    mainBranch?: string
+    // TODO: обязательное поле хотя про это ничего сказано не было
+    mainBranch: string
     period?: number
     repoName: string
   }

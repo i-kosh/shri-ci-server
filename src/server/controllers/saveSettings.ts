@@ -18,7 +18,11 @@ const handler: RequestHandler<
     await repo.waitRepoReady()
 
     await settingsModel.setSettings({
-      data: req.body,
+      data: {
+        ...req.body,
+        // TODO: пока так, непонятно что с этим делать
+        mainBranch: req.body.mainBranch || 'master',
+      },
     })
 
     res.status(200).json()
