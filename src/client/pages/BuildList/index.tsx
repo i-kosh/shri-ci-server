@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState, useRef } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 import { DefaultLayout } from '../../layouts/Default'
 import { Button } from '../../components/Button'
 import { ReactComponent as PlaySvg } from '../../assets/play.svg'
@@ -22,7 +22,7 @@ export const BuildList: FunctionComponent = () => {
     useBuildList()
   const [isModalOpen, setModalOpen] = useState(false)
   const { queueNewBuild } = useQueueBuild()
-  const newBuildRef = useRef<string | number>('')
+  const [newBuildRef, setNewBuildRef] = useState<string | number>('')
 
   const itWasLoading = useWasTrue(isLoading)
 
@@ -121,15 +121,16 @@ export const BuildList: FunctionComponent = () => {
               placeholder: 'Commit hash',
             }}
             onChange={(val) => {
-              newBuildRef.current = val
+              setNewBuildRef(val)
             }}
           ></Input>
           <Button
             className="newbuild__run"
             btnStyle="accent"
+            disabled={!newBuildRef}
             nativeAttrs={{
               onClick: () => {
-                queueNewBuild(`${newBuildRef.current}`)
+                queueNewBuild(`${newBuildRef}`)
               },
             }}
           >
