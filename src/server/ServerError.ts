@@ -16,14 +16,12 @@ const isServerErrorArgs = (val: unknown): val is ServerErrorArgs => {
 export class ServerError extends Error {
   public status: number
 
-  constructor(cfg: ServerErrorArgs)
-  constructor(error: unknown) {
-    const cfg = error
-    if (error instanceof ServerError) {
-      super(error.message)
-      this.status = error.status
-    } else if (error instanceof Error) {
-      super(error.message)
+  public constructor(cfg: ServerErrorArgs | Error) {
+    if (cfg instanceof ServerError) {
+      super(cfg.message)
+      this.status = cfg.status
+    } else if (cfg instanceof Error) {
+      super(cfg.message)
       this.status = 500
     } else if (isServerErrorArgs(cfg)) {
       super(cfg.message)
