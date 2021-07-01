@@ -1,11 +1,9 @@
 import { it, expect, describe, jest, afterEach } from '@jest/globals'
 import { SingleRepoManager, Repo } from './Repo'
+import { tmpdir } from 'os'
 
 jest.spyOn(console, 'log').mockImplementation(() => {})
 jest.spyOn(console, 'info').mockImplementation(() => {})
-
-// @ts-ignore
-jest.spyOn(Repo.prototype, 'cloneRepo').mockImplementation(() => {})
 
 afterEach(() => {
   jest.useRealTimers()
@@ -17,6 +15,9 @@ const testBuildCommand = `echo ${testBuildCommandMatch}`
 
 describe('Функционал вспомогательного менеджера', () => {
   it('метод updRepo возвращает инстанс Repo', () => {
+    // @ts-ignore
+    jest.spyOn(Repo.prototype, 'cloneRepo').mockImplementationOnce(() => {})
+
     const manager = new SingleRepoManager()
     const repo = manager.updRepo({
       repoName: testGitHubRepo,
@@ -28,6 +29,8 @@ describe('Функционал вспомогательного менеджер
 
   describe('метод getRepoAsync', () => {
     it('возвращает промис с инстансом Repo', async () => {
+      // @ts-ignore
+      jest.spyOn(Repo.prototype, 'cloneRepo').mockImplementationOnce(() => {})
       jest.useFakeTimers()
 
       const manager = new SingleRepoManager()
@@ -45,6 +48,8 @@ describe('Функционал вспомогательного менеджер
     })
 
     it('падает с ошибкой если инициализация Repo сфейлилась', async () => {
+      // @ts-ignore
+      jest.spyOn(Repo.prototype, 'cloneRepo').mockImplementationOnce(() => {})
       jest.useFakeTimers()
 
       const manager = new SingleRepoManager()
@@ -62,6 +67,8 @@ describe('Функционал вспомогательного менеджер
     })
 
     it('падает с ошибкой если вышел таймаут инициализации', async () => {
+      // @ts-ignore
+      jest.spyOn(Repo.prototype, 'cloneRepo').mockImplementationOnce(() => {})
       jest.useFakeTimers()
 
       const manager = new SingleRepoManager()
@@ -73,6 +80,86 @@ describe('Функционал вспомогательного менеджер
         'message',
         'Repo initialization timeout (30s)'
       )
+    })
+  })
+})
+
+describe('Repo', () => {
+  describe('метод isGitDir', () => {
+    it('должен определить гит директорию', async () => {
+      // @ts-ignore
+      jest.spyOn(Repo.prototype, 'cloneRepo').mockImplementationOnce(() => {})
+
+      const repo = new Repo({
+        repoName: testGitHubRepo,
+        buildCommand: testBuildCommandMatch,
+        mainBranch: 'master',
+      })
+
+      await expect(
+        //@ts-expect-error
+        repo.isGitDir(process.cwd())
+      ).resolves.toBe(true)
+    })
+
+    it('НЕ должен определить гит директорию', async () => {
+      // @ts-ignore
+      jest.spyOn(Repo.prototype, 'cloneRepo').mockImplementationOnce(() => {})
+
+      const repo = new Repo({
+        repoName: testGitHubRepo,
+        buildCommand: testBuildCommandMatch,
+        mainBranch: 'master',
+      })
+
+      await expect(
+        //@ts-expect-error
+        repo.isGitDir(tmpdir())
+      ).resolves.toBe(false)
+    })
+  })
+
+  describe('метод waitRepoReady', () => {
+    it('дожидается когда репозиторий будет склонирован', async () => {
+      // @ts-ignore
+      jest.spyOn(Repo.prototype, 'cloneRepo').mockImplementationOnce(() => {})
+
+      const repo = new Repo({
+        repoName: testGitHubRepo,
+        buildCommand: testBuildCommandMatch,
+        mainBranch: 'master',
+      })
+
+      jest.useFakeTimers()
+
+      const promise = repo.waitRepoReady()
+      expect(promise).toBeInstanceOf(Promise)
+
+      repo.exist = true
+      jest.advanceTimersToNextTimer()
+
+      await expect(promise).resolves.toBeUndefined()
+    })
+
+    it('реджектится если репозиторий не был инициализирован', async () => {
+      // @ts-ignore
+      jest.spyOn(Repo.prototype, 'cloneRepo').mockImplementationOnce(() => {})
+
+      const repo = new Repo({
+        repoName: testGitHubRepo,
+        buildCommand: testBuildCommandMatch,
+        mainBranch: 'master',
+      })
+
+      jest.useFakeTimers()
+
+      const promise = repo.waitRepoReady()
+      expect(promise).toBeInstanceOf(Promise)
+
+      repo.failed = true
+      jest.advanceTimersToNextTimer()
+
+      await expect(promise).rejects.toBeInstanceOf(Error)
     })
   })
 })
