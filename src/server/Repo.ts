@@ -226,7 +226,7 @@ export class Repo {
   }
 }
 
-class SingleRepoManager {
+export class SingleRepoManager {
   private repoLink?: string
   private repoInstanse?: Repo
 
