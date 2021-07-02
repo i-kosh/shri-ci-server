@@ -11,7 +11,7 @@ import { v4 as uuid } from 'uuid'
 import { Message, MessageProps } from '../Message'
 import './style.scss'
 
-interface Toast {
+export interface Toast {
   content?: ReactNode
   msg?: {
     text: ReactNode
@@ -22,7 +22,7 @@ interface Toast {
 
 type ToastWithKey = Toast & { key: string }
 
-interface ToastsCtx {
+export interface ToastsCtx {
   add: (time: number, toast: Toast) => void
 }
 
