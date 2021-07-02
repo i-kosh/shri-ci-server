@@ -3,7 +3,8 @@
   "env": {
     "browser": true,
     "es6": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
@@ -11,6 +12,8 @@
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
+    "plugin:jest-dom/recommended",
     "prettier"
   ],
   "rules": {
