@@ -6,9 +6,16 @@ const config: Config.InitialOptions = {
 
   testEnvironment: 'jsdom',
   testMatch: ['**/*.test.{ts,tsx}'],
-  moduleNameMapper: {
-    '\\.(css|scss)$': '<rootDir>/__mocks__/styleMock.js',
+  transform: {
+    '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$': 'babel-jest',
+    '^.+\\.s?css$': '<rootDir>/__mocks__/styleMock.js',
+    '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
+      '<rootDir>/__mocks__/fileMock.js',
   },
+  transformIgnorePatterns: [
+    '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
+    '^.+\\.module\\.(css|sass|scss)$',
+  ],
   setupFilesAfterEnv: ['<rootDir>/jestSetup.ts'],
 }
 
