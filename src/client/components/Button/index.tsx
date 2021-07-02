@@ -48,6 +48,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
     {
       className: rootClasses,
       ...nativeAttrs,
+      disabled,
       tabIndex: disabled ? -1 : undefined,
     },
     <>
