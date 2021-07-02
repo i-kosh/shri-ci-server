@@ -21,6 +21,12 @@
   },
   "overrides": [
     {
+      "files": ["*.{js,jsx}"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": 0
+      }
+    },
+    {
       "files": ["*.test.{js,jsx,ts,tsx}"],
       "rules": {
         "@typescript-eslint/ban-ts-comment": 0,
