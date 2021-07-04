@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export const useWasTrue = (dep: unknown) => {
+export const useWasTrue = (dep: unknown): boolean => {
   const [wasTrue, setWasTrue] = useState(false)
 
   useEffect(() => {
