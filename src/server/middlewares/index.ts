@@ -8,6 +8,7 @@ import speedLimiter from 'express-slow-down'
 import { setReqId, getReqId } from '../utils/getSetReqId'
 import { v4 as uuidv4 } from 'uuid'
 import { ServerError } from '../ServerError'
+import cookieParser from 'cookie-parser'
 
 export const applyPreMiddlewares = (app: Express): void => {
   app.use(
@@ -34,6 +35,8 @@ export const applyPreMiddlewares = (app: Express): void => {
       },
     })
   )
+
+  app.use(cookieParser())
 
   app.use((req, res, next) => {
     setReqId(req, uuidv4())
