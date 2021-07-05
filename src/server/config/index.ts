@@ -19,11 +19,10 @@ const cfg: Config = {
   DB: parsed.DB,
   isDev: NODE_ENV === 'development',
   isProd: NODE_ENV === 'production',
-  DRY_BUILD:
-    boolFromString(parsed.DRY_BUILD) || boolFromString(process.env.DRY_BUILD),
+  DRY_BUILD: boolFromString(parsed.DRY_BUILD),
 }
 
-console.log(cfg)
+console.log('Config:\n', cfg)
 
 validateConfig(cfg)
 
