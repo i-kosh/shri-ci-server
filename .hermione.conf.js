@@ -38,6 +38,8 @@ const cfg = {
   plugins: {
     'html-reporter/hermione': {},
   },
+
+  retry: 3,
 }
 
 // cfg.plugins[`${__dirname}/tests/plugins/url-decorator.js`] = {
