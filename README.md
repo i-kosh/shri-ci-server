@@ -18,4 +18,5 @@
 
 - Установить и запустить [selenium-standalone](https://github.com/gemini-testing/hermione#prerequisites) согласно инструкции
 - При необходимости указать URL для запупущенного сервера selenium в `.env`
+- Сбилдить сервер и клиент командой `npm run build` и запустить `npm run start`
 - Выполнить `npm run hermione`
