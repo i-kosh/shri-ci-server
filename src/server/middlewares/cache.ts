@@ -1,7 +1,8 @@
 import { RequestHandler } from 'express'
 import { getReqId } from '../utils/getSetReqId'
 import { bytesToMB } from '../utils/bytesToMB'
-import { cyan } from 'colors'
+import { extractCookies } from '../utils/extractCookies'
+import { cyan, blue } from 'colors'
 
 interface Cached {
   expires: number
@@ -49,48 +50,59 @@ export function addCache(target: RequestHandler, cfg?: Params): RequestHandler {
   }
 
   return (req, res, next) => {
-    const originalResJson = res.json.bind(res)
-    const key = req.url
-    const cached = mem.get(key)
+    const cookies = extractCookies(req)
+    const isTesting = !!cookies.testMockApi
 
-    if (!cached || cached.expires <= Date.now()) {
-      res.json = (body) => {
-        if (body && !(body instanceof Error)) {
-          const expires = Date.now() + cfgParams.ttl
-          const sizeBytes = Buffer.from(`${body}`).byteLength
-          console.log(
-            cyan(
-              `Caching new data:
-              exp=${new Date(expires).toUTCString()}
-              size=${bytesToMB(sizeBytes).toFixed(2)}mb`
-            )
-          )
-          memSet(key, {
-            data: body,
-            expires,
-            sizeBytes,
-          })
+    if (!isTesting) {
+      const originalResJson = res.json.bind(res)
+      const key = req.url
+      const cached = mem.get(key)
 
-          const loadPrecent = (
-            (cfgParams.cacheSizeMB / 100) *
-            bytesToMB(memSize)
-          ).toFixed(2)
-          console.log(
-            cyan(
-              `Current cache loading ${loadPrecent}% (${bytesToMB(
-                memSize
-              ).toFixed(2)}mb of ${cfgParams.cacheSizeMB}mb)`
+      if (!cached || cached.expires <= Date.now()) {
+        res.json = (body) => {
+          if (body && !(body instanceof Error)) {
+            const expires = Date.now() + cfgParams.ttl
+            const sizeBytes = Buffer.from(`${body}`).byteLength
+            console.log(
+              cyan(
+                `Caching new data:
+                exp=${new Date(expires).toUTCString()}
+                size=${bytesToMB(sizeBytes).toFixed(2)}mb`
+              )
             )
-          )
+            memSet(key, {
+              data: body,
+              expires,
+              sizeBytes,
+            })
+
+            const loadPrecent = (
+              (cfgParams.cacheSizeMB / 100) *
+              bytesToMB(memSize)
+            ).toFixed(2)
+            console.log(
+              cyan(
+                `Current cache loading ${loadPrecent}% (${bytesToMB(
+                  memSize
+                ).toFixed(2)}mb of ${cfgParams.cacheSizeMB}mb)`
+              )
+            )
+          }
+
+          return originalResJson(body)
         }
 
-        return originalResJson(body)
+        target(req, res, next)
+      } else {
+        console.log(cyan(`Serving cached data for ${getReqId(req)}`))
+        res.json(cached.data)
       }
+    } else {
+      console.warn(
+        blue('cache middleware: mocked request - disabling cache for this one')
+      )
 
       target(req, res, next)
-    } else {
-      console.log(cyan(`Serving cached data for ${getReqId(req)}`))
-      res.json(cached.data)
     }
   }
 }

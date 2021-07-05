@@ -2,32 +2,43 @@ import settingsModel from '../models/Settings'
 import { RequestHandler } from 'express'
 import { repoManager } from '../Repo'
 import type { SettingsSaveRequest, SettingsSaveResponse } from '../../types'
+import { extractCookies } from '../utils/extractCookies'
+import { blue } from 'colors'
 
 const handler: RequestHandler<
   unknown,
   SettingsSaveResponse,
   SettingsSaveRequest
 > = async (req, res, next) => {
-  try {
-    const repo = repoManager.updRepo({
-      repoName: req.body.repoName.trim(),
-      buildCommand: req.body.buildCommand.trim(),
-      mainBranch: req.body.mainBranch?.trim(),
-    })
+  const cookies = extractCookies(req)
 
-    await repo.waitRepoReady()
-
-    await settingsModel.setSettings({
-      data: {
-        ...req.body,
-        // TODO: пока так, непонятно что с этим делать
-        mainBranch: req.body.mainBranch || 'master',
-      },
-    })
-
+  if (cookies.testMockApi) {
+    console.warn(
+      blue('saveSettings: test cookie resivied - using mocked response')
+    )
     res.status(200).json()
-  } catch (error) {
-    next(error)
+  } else {
+    try {
+      const repo = repoManager.updRepo({
+        repoName: req.body.repoName.trim(),
+        buildCommand: req.body.buildCommand.trim(),
+        mainBranch: req.body.mainBranch?.trim(),
+      })
+
+      await repo.waitRepoReady()
+
+      await settingsModel.setSettings({
+        data: {
+          ...req.body,
+          // TODO: пока так, непонятно что с этим делать
+          mainBranch: req.body.mainBranch || 'master',
+        },
+      })
+
+      res.status(200).json()
+    } catch (error) {
+      next(error)
+    }
   }
 }
 

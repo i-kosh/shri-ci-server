@@ -1,7 +1,6 @@
 import { config } from 'dotenv'
 import { Config } from './types'
 import validateConfig from '../utils/validateConfig'
-import { boolFromString } from '../utils/boolFromString'
 
 const { parsed, error } = config()
 
@@ -19,7 +18,6 @@ const cfg: Config = {
   DB: parsed.DB,
   isDev: NODE_ENV === 'development',
   isProd: NODE_ENV === 'production',
-  DRY_BUILD: boolFromString(parsed.DRY_BUILD),
 }
 
 console.log('Config:\n', cfg)

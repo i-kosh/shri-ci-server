@@ -5,5 +5,4 @@ export interface Config {
   DB: string
   isDev: boolean
   isProd: boolean
-  DRY_BUILD: boolean
 }
