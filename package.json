@@ -38,6 +38,7 @@
     "test": "jest",
     "test:client": "jest --selectProjects client",
     "test:server": "jest --selectProjects server",
+    "hermione": "hermione gui",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -97,6 +98,7 @@
     "@typescript-eslint/eslint-plugin": "^4.26.1",
     "@typescript-eslint/parser": "^4.26.1",
     "babel-loader": "^8.2.2",
+    "chai": "^4.3.4",
     "concurrently": "^6.2.0",
     "copy-webpack-plugin": "^9.0.0",
     "css-loader": "^5.2.6",
@@ -106,6 +108,8 @@
     "eslint-plugin-jest-dom": "^3.9.0",
     "eslint-plugin-mocha": "^9.0.0",
     "eslint-plugin-react": "^7.24.0",
+    "hermione": "^4.1.1",
+    "html-reporter": "^7.0.2",
     "html-webpack-plugin": "^5.3.2",
     "husky": "^6.0.0",
     "jest": "^26.6.3",
