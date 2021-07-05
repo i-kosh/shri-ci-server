@@ -8,7 +8,7 @@ export interface AvailableCookie extends Cookie {
 }
 
 export const extractCookies = (
-  req: Request<any>
+  req: Request<any, any, any, any>
 ): Partial<Record<CookiesNames, string>> => {
   return req.cookies
 }
