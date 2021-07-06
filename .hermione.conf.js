@@ -39,6 +39,8 @@ const cfg = {
     'html-reporter/hermione': {},
   },
 
+  screenshotsDir: (test) => `tests/screenshots/${test.id()}/${test.browserId}`,
+
   retry: 3,
 }
 
