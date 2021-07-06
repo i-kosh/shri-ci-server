@@ -38,7 +38,8 @@
     "test": "jest",
     "test:client": "jest --selectProjects client",
     "test:server": "jest --selectProjects server",
-    "hermione": "hermione gui",
+    "hermione": "hermione",
+    "hermione:gui": "hermione gui",
     "prepare": "husky install"
   },
   "dependencies": {
