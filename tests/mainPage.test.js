@@ -38,5 +38,63 @@ describe('Главная страница', function () {
     const currUrl = new URI(await browser.getUrl())
 
     assert.strictEqual(currUrl.path(), '/build/test-build-id')
+
+    await browser.deleteAllCookies()
+  })
+
+  it('если нажать show more происходит подгрузка билдов', async function () {
+    const browser = this.browser
+
+    await setCookies(
+      {
+        name: 'testMockApi',
+        value: 'test',
+      },
+      browser
+    )
+
+    await browser.url('/')
+    await waitTimer(1000, browser)
+
+    const list = await browser.$('.build-list')
+    await list.waitForExist()
+
+    const childElementCount = await list.getProperty('childElementCount')
+
+    const moreBtn = await browser.$('.build-list__more')
+    await moreBtn.waitForClickable()
+    await moreBtn.click()
+
+    assert.isTrue(
+      childElementCount < (await list.getProperty('childElementCount'))
+    )
+
+    await browser.deleteAllCookies()
+  })
+
+  it('отображается заглушка если нет настроек', async function () {
+    const browser = this.browser
+
+    await setCookies(
+      [
+        {
+          name: 'testMockApi',
+          value: 'test',
+        },
+        {
+          name: 'testNoSettings',
+          value: 'test',
+        },
+      ],
+      browser
+    )
+
+    await browser.url('/')
+    await waitTimer(1000, browser)
+
+    const noSettingsContainer = await browser.$('.no-settings')
+    await noSettingsContainer.waitForDisplayed()
+
+    await browser.deleteAllCookies()
   })
 })
