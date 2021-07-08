@@ -31,6 +31,7 @@ export const applyPreMiddlewares = (app: Express): void => {
         useDefaults: true,
         directives: {
           'script-src': ["'self'", "'unsafe-eval'"],
+          'default-src': ["'self'", 'shri.yandex'],
         },
       },
     })
