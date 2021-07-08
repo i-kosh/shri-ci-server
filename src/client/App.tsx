@@ -4,6 +4,7 @@ import { BuildPage } from './pages/Build'
 import { SettingsPage } from './pages/Settings'
 import { BuildList } from './pages/BuildList'
 import { NotFound } from './pages/404'
+import { MetricsPage } from './pages/Metrics'
 import { Switch, Route } from 'react-router-dom'
 import { useLoadSettingsQuery } from './store/settingsApi'
 import { useAppDispatch } from './store/hooks'
@@ -12,6 +13,7 @@ import { useAppSelector } from './store/hooks'
 import { ScrollToTop } from './components/ScrollToTop'
 import { ToastDock } from './components/ToastBox'
 import { ModalDock } from './components/Modal'
+import { useMetrics } from './hooks/useMetrics'
 
 function App(): JSX.Element {
   const dispatch = useAppDispatch()
@@ -19,10 +21,13 @@ function App(): JSX.Element {
   const isSettings = settings.reponame && settings.command
   const { data, error, isLoading } = useLoadSettingsQuery(null)
 
+  const { onSpinnerHide } = useMetrics()
+
   useEffect(() => {
     // Убираем спиннер
     const initSpinner = document.querySelector('#init-spinner')
     if (initSpinner) {
+      onSpinnerHide()
       initSpinner.classList.add('init-spinner--hidden')
     }
 
@@ -51,6 +56,9 @@ function App(): JSX.Element {
           </Route>
           <Route exact path="/build/:buildId">
             <BuildPage />
+          </Route>
+          <Route exact path="/metrics">
+            <MetricsPage />
           </Route>
           <Route path="*">
             <NotFound />

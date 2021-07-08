@@ -1,5 +1,5 @@
 import { resolve } from 'path'
-import { Configuration } from 'webpack'
+import { Configuration, DefinePlugin } from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CopyPlugin from 'copy-webpack-plugin'
@@ -17,6 +17,7 @@ const config: Configuration = {
   },
   entry: {
     app: './src/client/index.tsx',
+    metrics: './src/client/metrics/index.ts',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
@@ -38,9 +39,13 @@ const config: Configuration = {
     },
   },
   plugins: [
+    new DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    }),
     new HtmlWebpackPlugin({
       template: './src/client/index.html',
       publicPath: '/',
+      excludeChunks: ['metrics'],
     }),
     new MiniCssExtractPlugin({
       filename: 'static/[name].css',
