@@ -36,6 +36,7 @@
     "build:client": "shx rm -rf dist/static dist/index.html && webpack --mode production -c webpack.client.ts",
     "lint": "eslint src/**/*.{ts,tsx} && stylelint src/client/**/*.{css,scss}",
     "test": "jest",
+    "test:tsc": "tsc --noEmit --pretty --project ./src/client/tsconfig.json && tsc --noEmit --pretty --project ./src/server/tsconfig.json",
     "test:client": "jest --selectProjects client",
     "test:server": "jest --selectProjects server",
     "hermione": "hermione",
@@ -67,7 +68,8 @@
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "web-vitals": "^2.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
