@@ -31,6 +31,14 @@
       "excludedFiles": ["*.test.*"]
     },
 
+    // Metrics
+    {
+      "files": ["src/client/metrics/**/*.{js,jsx}"],
+      "env": {
+        "browser": true
+      }
+    },
+
     // Jest
     {
       "files": ["*.test.{js,jsx,ts,tsx}"],
