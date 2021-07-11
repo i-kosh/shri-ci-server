@@ -29,7 +29,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node dist/server/server.js",
     "dev": "cross-env NODE_ENV=development concurrently \"nodemon\" \"webpack --mode development -c webpack.client.ts -w\"",
-    "dev:server": "cross-env NODE_ENV=development nodemon",
+    "dev:server": "cross-env NODE_ENV=development nodemon --config src/server/nodemon.json",
+    "dev:agent": "cross-env NODE_ENV=development nodemon --config src/agent/nodemon.json",
     "dev:client": "shx rm -rf dist/static dist/index.html && cross-env NODE_ENV=development webpack --mode development -c webpack.client.ts -w",
     "build": "shx rm -rf dist && npm run build:client && npm run build:server",
     "build:server": "shx rm -rf dist/server && tsc --build ./src/server/tsconfig.json",
@@ -46,7 +47,6 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.6.0",
     "ansi-to-html": "^0.6.15",
-    "async": "^3.2.0",
     "axios": "^0.21.1",
     "camelcase": "^6.2.0",
     "classnames": "^2.3.1",
@@ -83,7 +83,6 @@
     "@testing-library/react-hooks": "^7.0.1",
     "@testing-library/user-event": "^13.1.9",
     "@tsconfig/recommended": "^1.0.1",
-    "@types/async": "^3.2.6",
     "@types/cookie-parser": "^1.4.2",
     "@types/copy-webpack-plugin": "^8.0.0",
     "@types/cors": "^2.8.10",

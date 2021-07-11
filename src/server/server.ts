@@ -6,9 +6,8 @@ import {
   applyFinalMiddlewares,
   applyAfterMiddlewares,
 } from './middlewares'
-import { repoManager } from './Repo'
-import settingsModel from './models/Settings'
 import { resolve } from 'path'
+import { BuildsQueue } from './BuildsQueue'
 
 const pathToStatic = cfg.isDev
   ? resolve(__dirname, '../../dist/static')
@@ -27,26 +26,8 @@ applyFinalMiddlewares(app)
 
 function startServer() {
   console.info(`🚀 Starting server...`)
-
-  settingsModel
-    .getSettings()
-    .then(({ data }) => {
-      if (data.data) {
-        repoManager.updRepo({
-          repoName: data.data.repoName,
-          mainBranch: data.data.mainBranch,
-          buildCommand: data.data.buildCommand,
-        })
-        console.info('✔  Repo settings restored...')
-      } else {
-        console.log('No settings found')
-      }
-    })
-    .catch((err) => {
-      console.warn(err)
-    })
-
   app.listen(cfg.PORT, () => {
+    new BuildsQueue({}).start()
     console.info(`✔  Server started on port ${cfg.PORT}...`)
   })
 }

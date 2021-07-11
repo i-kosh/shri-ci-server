@@ -1,6 +1,5 @@
 import settingsModel from '../models/Settings'
 import { RequestHandler } from 'express'
-import { repoManager } from '../Repo'
 import type { SettingsSaveRequest, SettingsSaveResponse } from '../../types'
 import { extractCookies } from '../utils/extractCookies'
 import { blue } from 'colors'
@@ -19,14 +18,6 @@ const handler: RequestHandler<
     res.status(200).json()
   } else {
     try {
-      const repo = repoManager.updRepo({
-        repoName: req.body.repoName.trim(),
-        buildCommand: req.body.buildCommand.trim(),
-        mainBranch: req.body.mainBranch?.trim(),
-      })
-
-      await repo.waitRepoReady()
-
       await settingsModel.setSettings({
         data: {
           ...req.body,

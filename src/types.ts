@@ -1,6 +1,12 @@
-import type { QueueBuildResponse as QueueBuildResponseBack } from './server/models/types'
+import type { QueueBuild } from './server/models/types'
 
 // GetBuild
+export type BuildStatus =
+  | 'Success'
+  | 'Waiting'
+  | 'InProgress'
+  | 'Canceled'
+  | 'Fail'
 export interface Build {
   id: string
   configurationId: string
@@ -9,7 +15,7 @@ export interface Build {
   commitHash: string
   branchName: string
   authorName: string
-  status: 'Success' | 'Waiting' | 'InProgress' | 'Canceled' | 'Fail'
+  status: BuildStatus
   start: string
   duration: number
 }
@@ -66,7 +72,7 @@ export interface BuildParams {
 
 // QueueBuild
 export type CommitHash = string
-export type QueueBuildResponse = QueueBuildResponseBack['data']
+export type QueueBuildResponse = QueueBuild
 
 // BuildList
 export interface BuildListParams {
@@ -97,7 +103,7 @@ export type SettingsResponse =
       id: string
       repoName: string
       buildCommand: string
-      mainBranch?: string
+      mainBranch: string
       period?: number
     }
   | undefined
@@ -106,3 +112,42 @@ export type SettingsResponse =
 export interface ErrorResponse {
   text: string
 }
+
+// Server routers types
+export type AgentHealthCheckRequestBody = {
+  agentID: string
+}
+export type AgentHealthCheckResponseBody = 'ok' | undefined
+
+export type AgentRegisterRequestBody = { host: string; port: string }
+export type AgentRegisterResponseBody =
+  | {
+      id: string
+      maxHealthCheckMiss: number
+      healthReportRate: number
+    }
+  | undefined
+
+export type AgentResultRequestBody = {
+  agentID: string
+  id: string
+  status: 'Success' | 'Fail'
+  log: string
+}
+export type AgentResultResponseBody = void
+
+export type AgentUnregisterRequestBody = {
+  agentID: string
+  error?: string
+}
+export type AgentUnregisterResponseBody = void
+
+// Agent routers types
+
+export type AgentBuildRequestBody = {
+  id: string
+  commitHash: string
+  command: string
+  repo: string
+}
+export type AgentBuildResponseBody = 'ok' | undefined

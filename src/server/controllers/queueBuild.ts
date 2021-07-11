@@ -1,9 +1,10 @@
 import { RequestHandler } from 'express'
-import { repoManager } from '../Repo'
-import buildQueue from '../BuildQueue'
 import type { QueueBuildResponse } from '../../types'
 import { extractCookies } from '../utils/extractCookies'
-import { blue } from 'colors'
+import { blue, yellow } from 'colors'
+import { getCommitInfo } from '../utils/getCommitInfo'
+import settingsModel from '../models/Settings'
+import buildModel from '../models/Build'
 
 type GetBuildParams = {
   commitHash?: string
@@ -28,17 +29,31 @@ const handler: ReqHandler = async (req, res, next) => {
       if (!req.params.commitHash) {
         throw new Error('Missing required parameter')
       }
-      const repo = await repoManager.getRepoAsync()
-      const commitInfo = await repo.getCommitInfo(req.params.commitHash)
-      if (!commitInfo) throw new Error('Error while getting commit info')
-      const response = await buildQueue.add({
-        authorName: commitInfo.author,
-        branchName: repo.params.mainBranch,
-        commitHash: commitInfo.hash,
-        commitMessage: commitInfo.message,
-      })
 
-      res.json(response.data.data)
+      console.log(
+        yellow(`New build request (commit: ${req.params.commitHash})`)
+      )
+
+      const settingsResp = await settingsModel.getSettings()
+      const settings = settingsResp.data.data
+      if (!settings) throw new Error('No settings found')
+
+      const { author, hash, message } = await getCommitInfo(
+        `https://github.com/${settings.repoName}.git`,
+        req.params.commitHash
+      )
+
+      const result = await buildModel.queueBuild({
+        data: {
+          authorName: author,
+          commitHash: hash,
+          commitMessage: message,
+          branchName: settings.mainBranch,
+        },
+      })
+      const newBuild = result.data.data
+
+      res.json(newBuild)
     } catch (error) {
       next(error)
     }
