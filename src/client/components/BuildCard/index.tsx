@@ -27,8 +27,6 @@ export interface BuildCardProps {
 }
 
 export const BuildCard = React.memo<BuildCardProps>((props) => {
-  console.log('RENDER')
-
   const {
     className,
     author,
