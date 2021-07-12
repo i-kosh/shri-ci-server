@@ -1,0 +1,16 @@
+FROM node:14-alpine
+
+RUN apk add --no-cache git
+
+WORKDIR /app
+COPY ./dist/server/server.js server/
+COPY ./dist/static static/
+COPY ./dist/index.html  .
+
+ENV DOCKER=true
+
+USER node
+
+EXPOSE ${PORT}
+
+CMD ["node", "/app/server/server.js"]
