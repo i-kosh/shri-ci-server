@@ -65,9 +65,9 @@ export function addCache(target: RequestHandler, cfg?: Params): RequestHandler {
             const sizeBytes = Buffer.from(`${body}`).byteLength
             console.log(
               cyan(
-                `Caching new data:
-                exp=${new Date(expires).toUTCString()}
-                size=${bytesToMB(sizeBytes).toFixed(2)}mb`
+                `Caching new data:\n` +
+                  `exp=${new Date(expires).toUTCString()}\n` +
+                  `size=${bytesToMB(sizeBytes).toFixed(2)}mb`
               )
             )
             memSet(key, {

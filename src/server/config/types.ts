@@ -6,4 +6,5 @@ export interface Config {
   isDev: boolean
   isProd: boolean
   AGENTS_REPORT_RATE_MS: number
+  isDocker: boolean
 }
