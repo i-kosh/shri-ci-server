@@ -52,6 +52,7 @@ export class Runner {
       }
     ).catch((err) => {
       logError(err)
+      process.exit(1)
     })
   }
 

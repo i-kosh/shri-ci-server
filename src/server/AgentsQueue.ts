@@ -3,11 +3,16 @@ import { dim, green, yellow, cyan, red } from 'colors'
 import { ServerError } from './ServerError'
 import cfg from './config'
 
-interface Agent {
+export interface Agent {
   id: string
   host: string
   port: string
   lastHealthTimestamp: number
+  /**
+   * Сет функций которые будут вызваны если агент умрет,
+   * сет отчищается перед тем как вернуть агента в список свободных
+   */
+  onKilled: Array<(reason?: string) => unknown>
 }
 
 interface UnhealthyAgent extends Agent {
@@ -82,6 +87,13 @@ export class AgentsQueue {
             )
           )
           unhealthyAgent.del = true
+          unhealthyAgent.onKilled.forEach(async (fn) => {
+            try {
+              await fn('Agent was unresponsive too long')
+            } catch (error) {
+              // noop
+            }
+          })
         }
       })
       // Окончательно удаляем помеченные агенты
@@ -109,14 +121,16 @@ export class AgentsQueue {
       return
     }
 
-    const agentRequest = this.agentsRequestsPool.shift()
-    if (agentRequest) {
-      agentRequest(agent)
-    } else {
-      const isAgnetAlreadyFree = this.freeAgentsPool.findIndex(
-        (val) => val.id === agent.id
-      )
-      if (isAgnetAlreadyFree < 0) {
+    const isAgnetAlreadyFree =
+      this.freeAgentsPool.findIndex((val) => val.id === agent.id) > -1
+
+    if (!isAgnetAlreadyFree) {
+      agent.onKilled = []
+
+      const agentRequest = this.agentsRequestsPool.shift()
+      if (agentRequest) {
+        agentRequest(agent)
+      } else {
         this.freeAgentsPool.push(agent)
       }
     }
@@ -138,6 +152,7 @@ export class AgentsQueue {
       host,
       port,
       lastHealthTimestamp: Date.now(),
+      onKilled: [],
     }
 
     const existed = this.registeredAgents.findIndex(
@@ -161,6 +176,17 @@ export class AgentsQueue {
   }
 
   public unregisterAgent(id: string, reason?: string): void {
+    const agent = this.registeredAgents.find((val) => val.id === id)
+    if (agent) {
+      agent.onKilled.forEach(async (fn) => {
+        try {
+          await fn('Agent was unregistered')
+        } catch (error) {
+          // noop
+        }
+      })
+    }
+
     this.registeredAgents = this.registeredAgents.filter(
       (agent) => agent.id !== id
     )
@@ -171,6 +197,12 @@ export class AgentsQueue {
   }
 
   public async reserveFreeAgent(): Promise<Agent> {
+    if (!this.registeredAgents.length) {
+      console.log(
+        'Free agent was requested, but no agent was registered at this moment'
+      )
+    }
+
     const frstAgent = this.freeAgentsPool.shift()
     if (frstAgent) {
       this.reportStat()
@@ -203,6 +235,7 @@ export class AgentsQueue {
           host: unhealthyAgent.host,
           port: unhealthyAgent.port,
           lastHealthTimestamp: Date.now(),
+          onKilled: unhealthyAgent.onKilled,
         })
 
         if (unhealthyAgent.wasFree) {
