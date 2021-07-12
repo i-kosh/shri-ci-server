@@ -51,6 +51,12 @@ export const BuildPage: FunctionComponent = () => {
           size="xs"
           nativeAttrs={{
             title: 'Rebuild',
+            onClick: () => {
+              if (build.data) {
+                queueNewBuild(build.data.commitHash)
+              }
+            },
+            disabled: !build.data,
           }}
         >
           <ReloadSvg />
