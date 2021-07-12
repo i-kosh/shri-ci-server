@@ -134,8 +134,8 @@ export class BuildsQueue {
             params: { offset: 0, limit: 100 },
           })
           const builds = buildsResponse.data.data
-          const onlyWaitingBuilds = builds.filter(
-            (build): build is BuildWaiting => {
+          const onlyWaitingBuilds = builds
+            .filter((build): build is BuildWaiting => {
               // Небольшой сайдэффект - удаляем из очереди билды у которых статус сменился с 'Waiting' на другой
               if (build.status !== 'Waiting') {
                 this.removeFromQueue(build.id)
@@ -159,8 +159,8 @@ export class BuildsQueue {
               }
 
               return build.status === 'Waiting'
-            }
-          )
+            })
+            .reverse()
 
           if (onlyWaitingBuilds.length) {
             console.log(

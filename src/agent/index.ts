@@ -33,7 +33,7 @@ const startAgent = () => {
           return axios.post<AgentRegisterResponseBody>(
             `http://${cfg.SERVER_HOST}:${cfg.SERVER_PORT}${cfg.agentRegisterPath}`,
             {
-              host: '127.0.0.1',
+              host: `${cfg.AGENT_HOST}`,
               port: `${cfg.AGENT_PORT}`,
             } as AgentRegisterRequestBody,
             {
