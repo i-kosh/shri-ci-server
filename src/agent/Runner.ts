@@ -118,7 +118,7 @@ export class Runner {
         agentID: this.agentID,
         id: params.buildID,
         log: `${stderr}\n${stdout}`,
-        status: stderr ? 'Fail' : 'Success',
+        status: 'Success',
       })
     } catch (error) {
       let errMsg = 'Error while running build'
