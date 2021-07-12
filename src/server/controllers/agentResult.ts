@@ -41,7 +41,7 @@ const handler: ReqHandler = async (req, res, next) => {
           buildLog: reqBody.log,
           success: reqBody.status === 'Success',
           duration: toUnixTime(
-            Date.now() - new Date(currentBuildData.start).valueOf()
+            Date.now() - new Date(currentBuildData.start + 'Z').valueOf()
           ),
         },
       })
