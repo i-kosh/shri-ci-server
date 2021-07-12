@@ -1,17 +1,17 @@
-import type { Build } from '../../types'
+import type { BuildStatus } from '../../types'
 import { BuildCardProps } from '../components/BuildCard'
 
-export const getStatus = (
-  status: Build['status']
-): BuildCardProps['status'] => {
+export const getStatus = (status: BuildStatus): BuildCardProps['status'] => {
   switch (status) {
     case 'Success':
       return 'success'
+    case 'Fail':
+      return 'fail'
     case 'Waiting':
       return 'wait'
     case 'InProgress':
-      return 'wait'
+      return 'inProgress'
     default:
-      return 'fail'
+      return 'canceled'
   }
 }

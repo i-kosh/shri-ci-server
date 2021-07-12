@@ -12,7 +12,7 @@ import './style.scss'
 import { useStartDateAndDuration } from './useStartDateAndDuration'
 
 export interface BuildCardProps {
-  status: 'success' | 'wait' | 'fail'
+  status: 'success' | 'wait' | 'fail' | 'canceled' | 'inProgress'
   number?: string | number
   msg?: string
   mainBranch?: string
@@ -26,7 +26,9 @@ export interface BuildCardProps {
   path?: string
 }
 
-export const BuildCard: FC<BuildCardProps> = (props) => {
+export const BuildCard = React.memo<BuildCardProps>((props) => {
+  console.log('RENDER')
+
   const {
     className,
     author,
@@ -42,16 +44,20 @@ export const BuildCard: FC<BuildCardProps> = (props) => {
     path,
   } = props
 
-  const rootClassnames =
-    classnames({
+  const rootClassnames = classnames(
+    {
       'build-card': true,
       'build-card--success': status === 'success',
       'build-card--fail': status === 'fail',
       'build-card--wait': status === 'wait',
+      'build-card--inProgress': status === 'inProgress',
+      'build-card--canceled': status === 'canceled',
       'build-card--selectable': selectable,
       'build-card--oneline': oneline,
       'build-card--link': !!path,
-    }) + ` ${className || ''}`
+    },
+    className
+  )
 
   const shortHash = commitHash?.slice(0, 6)
   const { durationString, startDateString } = useStartDateAndDuration(
@@ -59,10 +65,26 @@ export const BuildCard: FC<BuildCardProps> = (props) => {
     duration
   )
 
+  const getStatusText = () => {
+    switch (status) {
+      case 'success':
+        return 'Build сompleted successfully'
+      case 'fail':
+        return 'Build failed'
+      case 'inProgress':
+        return 'Build in progress'
+      case 'wait':
+        return 'Build waiting'
+
+      default:
+        return 'Build was canceled'
+    }
+  }
+
   const statusIcon =
     status === 'success' ? (
       <SuccessSvg />
-    ) : status === 'fail' ? (
+    ) : status === 'fail' || status === 'canceled' ? (
       <FailSvg />
     ) : (
       <WaitSvg />
@@ -90,7 +112,9 @@ export const BuildCard: FC<BuildCardProps> = (props) => {
       <div>
         <div className="build-card__status-message">
           <p className="build-card__status">
-            <span className="build-card__status-icon">{statusIcon}</span>
+            <span className="build-card__status-icon" title={getStatusText()}>
+              {statusIcon}
+            </span>
             <span className="build-card__number">#{number}</span>
           </p>
 
@@ -138,4 +162,4 @@ export const BuildCard: FC<BuildCardProps> = (props) => {
       )}
     </Tag>
   )
-}
+})
