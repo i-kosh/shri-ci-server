@@ -22,12 +22,11 @@ const cfg: Config = {
   isDocker,
   isDev: NODE_ENV === 'development',
   isProd: NODE_ENV === 'production',
-  PORT: process.env.PORT || isDocker ? '80' : '3030',
+  PORT: process.env.PORT || (isDocker ? '80' : '3030'),
   TOKEN: process.env.TOKEN || '',
   DB: process.env.DB || '',
-  AGENTS_REPORT_RATE_MS: parseInt(
-    process.env.AGENTS_REPORT_RATE_MS || `${1000 * 60}`
-  ),
+  AGENTS_REPORT_RATE: parseInt(process.env.AGENTS_REPORT_RATE || '1'),
+  BUILDS_POLLING_RATE: parseInt(process.env.BUILDS_POLLING_RATE || '1'),
 }
 
 console.log('Config:\n', { ...cfg, TOKEN: '******' })

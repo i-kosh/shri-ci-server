@@ -36,7 +36,7 @@ export class AgentsQueue {
     this.agentsRequestsPool = []
     this.unhealthyAgentsPool = []
     this.agentHealthMaxMiss = 3
-    this.agentHealthReportRate = cfg.AGENTS_REPORT_RATE_MS
+    this.agentHealthReportRate = cfg.AGENTS_REPORT_RATE * 60 * 1000 // Переводим в мс
 
     this.startHealthObserver()
   }

@@ -10,10 +10,6 @@ import {
 } from '../types'
 import settingsModel from './models/Settings'
 
-interface QueueConfig {
-  pollingIntervalMs?: number
-}
-
 interface QueuedBuild {
   id: string
   startTimestamp: number
@@ -25,10 +21,8 @@ export class BuildsQueue {
   private pollingInProgress: boolean
   private queuedBuilds: QueuedBuild[]
 
-  constructor(param: QueueConfig) {
-    const devInterval = 1000 * 10 // 10s
-    const prodInterval = param.pollingIntervalMs || 1000 * 60 * 3 // 3min
-    this.pollingInterval = cfg.isDev ? devInterval : prodInterval
+  constructor() {
+    this.pollingInterval = cfg.BUILDS_POLLING_RATE * 60 * 1000 // переводим в мс
     this.pollingInProgress = false
     this.queuedBuilds = []
   }

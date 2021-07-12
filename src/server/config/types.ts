@@ -5,6 +5,9 @@ export interface Config {
   DB: string
   isDev: boolean
   isProd: boolean
-  AGENTS_REPORT_RATE_MS: number
   isDocker: boolean
+  /** Размер интервала в минутах */
+  AGENTS_REPORT_RATE: number
+  /** Размер интервала в минутах */
+  BUILDS_POLLING_RATE: number
 }

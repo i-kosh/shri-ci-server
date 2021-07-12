@@ -27,11 +27,10 @@ if (process.env.DOCKER) {
 
 const isDocker = !!process.env.DOCKER
 const cfg: Config = {
-  AGENT_PORT: parseInt(process.env.AGENT_PORT || `0`) || isDocker ? 80 : 3050,
+  AGENT_PORT: parseInt(process.env.AGENT_PORT || `0`) || (isDocker ? 80 : 3050),
   AGENT_HOST:
-    process.env.AGENT_HOST || isDocker
-      ? process.env.HOSTNAME || ''
-      : '127.0.0.1',
+    process.env.AGENT_HOST ||
+    (isDocker ? process.env.HOSTNAME || '' : '127.0.0.1'),
   SERVER_HOST: process.env.SERVER_HOST || '',
   SERVER_PORT: parseInt(process.env.SERVER_PORT || `0`),
   agentUnregisterPath: '/api/agent/unregister',
