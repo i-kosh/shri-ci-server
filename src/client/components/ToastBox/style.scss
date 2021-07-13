@@ -2,24 +2,22 @@
 
 #toast-dock {
   position: fixed;
-  top: 25px;
+  bottom: 25px;
   left: 0;
   padding: 0 $page-padding-x;
-  width: 100%;
-  user-select: none;
+  width: 100vw;
   z-index: 1000;
 
   @media (min-width: $desktop) {
-    top: 52px;
-    width: 485px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0;
+    bottom: 52px;
   }
 }
 
 .toast {
   width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 485px;
 
   &:not(:last-of-type) {
     margin-bottom: 4px;

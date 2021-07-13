@@ -5,4 +5,10 @@
   max-width: 824px;
   margin: 0 auto;
   height: 100%;
+
+  @media (min-width: $desktop) {
+    $scrollbar-size: 16px;
+
+    padding-right: $page-padding-x + $scrollbar-size;
+  }
 }
