@@ -33,7 +33,7 @@ export const BuildPage: FunctionComponent = () => {
   useEffect(() => {
     // Отвратительно зато работает
     if ((build.isSuccess && !build.data) || build.isError) {
-      history.replace('/')
+      history.replace('/404')
     }
   }, [build.data, build.isSuccess, build.isError])
 
