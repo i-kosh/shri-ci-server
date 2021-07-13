@@ -21,7 +21,7 @@ export const BuildList: FunctionComponent = () => {
   const { buildList, noMoreBuilds, fetchBuilds, loadingLimit, isLoading } =
     useBuildList()
   const [isModalOpen, setModalOpen] = useState(false)
-  const { queueNewBuild } = useQueueBuild()
+  const { queueNewBuild, isLoading: newBuildPending } = useQueueBuild()
   const [newBuildRef, setNewBuildRef] = useState<string | number>('')
 
   const itWasLoading = useWasTrue(isLoading)
@@ -127,7 +127,7 @@ export const BuildList: FunctionComponent = () => {
           <Button
             className="newbuild__run"
             btnStyle="accent"
-            disabled={!newBuildRef}
+            disabled={!newBuildRef || newBuildPending}
             nativeAttrs={{
               onClick: () => {
                 queueNewBuild(`${newBuildRef}`)
@@ -138,6 +138,7 @@ export const BuildList: FunctionComponent = () => {
           </Button>
           <Button
             className="newbuild__cancel"
+            disabled={newBuildPending}
             nativeAttrs={{
               onClick: () => {
                 setModalOpen(false)
