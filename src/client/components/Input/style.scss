@@ -1,0 +1,93 @@
+@keyframes appear {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.input {
+  display: inline-block;
+  width: 100%;
+  position: relative;
+}
+
+.input__elem {
+  background-color: var(--color-bg-main);
+  border-radius: 4px;
+  border: 2px solid var(--color-bg-heavy);
+  height: 36px;
+  width: 100%;
+  padding: 0 13px;
+  transition-property: border-color;
+  transition-duration: 0.1s;
+  transition-timing-function: linear;
+
+  &:focus {
+    border-color: var(--color-border-focused);
+    outline: none;
+  }
+
+  &::placeholder {
+    color: var(--color-text);
+    opacity: 0.2;
+  }
+
+  &:disabled {
+    cursor: default;
+    background-color: var(--color-bg-disabled);
+  }
+}
+
+.input__error {
+  font-size: 11px;
+  color: var(--color-error);
+  padding-top: 4px;
+  padding-left: 2px;
+  animation-name: appear;
+  animation-duration: 0.6s;
+}
+
+.input__clear {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36px;
+  height: 100%;
+  background-image: url('../../assets/clear-button.svg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+}
+
+.input__elem:disabled + .input__clear {
+  cursor: default;
+}
+
+.input--clearable {
+  .input__elem {
+    padding-right: 36px;
+  }
+}
+
+.input--error {
+  .input__elem {
+    border-color: var(--color-error);
+  }
+}
+
+.input--hide-arrows {
+  .input__elem::-webkit-outer-spin-button,
+  .input__elem::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .input__elem[type='number'] {
+    -moz-appearance: textfield;
+  }
+}

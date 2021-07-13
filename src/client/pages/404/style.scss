@@ -1,0 +1,14 @@
+.not-fount {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.not-fount__text {
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}

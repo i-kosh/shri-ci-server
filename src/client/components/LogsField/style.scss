@@ -1,0 +1,12 @@
+.logs-field {
+  background-color: var(--color-bg-disabled);
+  border-radius: 6px;
+  min-height: 56px;
+  padding: 8px 12px;
+  width: 100%;
+  font-family: Hack, monospace;
+  font-size: 10px;
+  line-height: 18px;
+  overflow-x: auto;
+  // letter-spacing: 1px;
+}

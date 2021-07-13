@@ -1,0 +1,36 @@
+@import '../../scss/variables.scss';
+
+.settings__header {
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.settings__subtitle {
+  color: var(--color-text-second);
+  margin-bottom: 14px;
+}
+
+.settings__input {
+  margin-bottom: 16px;
+
+  &:last-of-type {
+    margin-bottom: 20px;
+  }
+}
+
+.settings__save {
+  width: 100%;
+  margin-bottom: 12px;
+  @media (min-width: $desktop) {
+    width: auto;
+    margin-bottom: 0;
+    margin-right: 8px;
+  }
+}
+
+.settings__cancel {
+  width: 100%;
+  @media (min-width: $desktop) {
+    width: auto;
+  }
+}

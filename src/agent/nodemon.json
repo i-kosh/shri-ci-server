@@ -1,0 +1,12 @@
+{
+  "watch": ["src/agent"],
+  "ext": "ts,tsx,js,jsx,json",
+  "ignore": [
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "node_modules",
+    "src/client",
+    "src/server"
+  ],
+  "exec": "ts-node ./src/agent/index.ts --project ./src/agent/tsconfig.json"
+}

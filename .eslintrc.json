@@ -1,16 +1,75 @@
 {
   "root": true,
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": ["tsconfig.json"]
+  "env": {
+    "es6": true,
+    "node": true
   },
-  "plugins": ["@typescript-eslint"],
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
-  "rules": {
-    "@typescript-eslint/no-floating-promises": 1
-  }
+  "parser": "@typescript-eslint/parser",
+  "extends": ["eslint:recommended", "prettier"],
+  "overrides": [
+    // TS
+    {
+      "files": ["*.{ts,tsx}"],
+      "extends": "plugin:@typescript-eslint/recommended"
+    },
+
+    // React
+    {
+      "files": ["src/client/**/*.{ts,tsx}"],
+      "extends": ["plugin:react/recommended", "prettier"],
+      "env": {
+        "browser": true
+      },
+      "rules": {
+        "react/prop-types": 0
+      },
+      "settings": {
+        "react": {
+          "version": "17"
+        }
+      },
+      "excludedFiles": ["*.test.*"]
+    },
+
+    // Metrics
+    {
+      "files": ["src/client/metrics/**/*.{js,jsx}"],
+      "env": {
+        "browser": true
+      }
+    },
+
+    // Jest
+    {
+      "files": ["*.test.{js,jsx,ts,tsx}"],
+      "env": {
+        "jest": true
+      },
+      "extends": [
+        "plugin:jest/recommended",
+        "plugin:jest-dom/recommended",
+        "prettier"
+      ],
+      "rules": {
+        "@typescript-eslint/ban-ts-comment": 0,
+        "@typescript-eslint/no-empty-function": 0,
+        "@typescript-eslint/no-non-null-assertion": 0,
+        "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/no-unused-vars": 0
+      },
+      "excludedFiles": ["tests/**/*"]
+    },
+
+    // Hermione (mocha)
+    {
+      "files": ["tests/**/*.{js,ts}"],
+      "env": {
+        "mocha": true
+      },
+      "globals": {
+        "hermione": "readonly"
+      },
+      "extends": ["plugin:mocha/recommended", "prettier"]
+    }
+  ]
 }

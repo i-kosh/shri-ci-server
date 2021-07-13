@@ -1,0 +1,76 @@
+@import '../../scss/variables.scss';
+
+.run-build-button {
+  display: none;
+  margin-right: 8px;
+
+  @media (max-width: $desktop) {
+    display: block;
+  }
+}
+
+.run-build-button-desktop {
+  margin-right: 8px;
+  display: none;
+
+  @media (min-width: $desktop) {
+    display: block;
+  }
+}
+
+.build-list {
+  list-style: none;
+  margin-bottom: 8px;
+
+  &:last-child {
+    margin-bottom: 20px;
+  }
+}
+
+.build-list__item {
+  &:not(:last-child) {
+    margin-bottom: 8px;
+  }
+}
+
+.build-list__more {
+  width: 100%;
+  margin-bottom: 16px;
+
+  @media (min-width: $desktop) {
+    width: auto;
+    margin-bottom: 20px;
+  }
+}
+
+.build-list__no-builds {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 30px;
+  color: var(--color-text-second);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.newbuild {
+  max-width: 485px;
+  width: 100%;
+
+  &__title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  &__sub {
+    margin-bottom: 12px;
+  }
+
+  &__input {
+    margin-bottom: 12px;
+  }
+
+  &__run {
+    margin-right: 10px;
+  }
+}

@@ -1,0 +1,8 @@
+@import '../../scss/variables.scss';
+
+.page-container {
+  padding: 0 $page-padding-x;
+  max-width: 824px;
+  margin: 0 auto;
+  height: 100%;
+}

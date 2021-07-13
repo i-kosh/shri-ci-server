@@ -1,0 +1,80 @@
+@import '../../scss/variables.scss';
+
+$dot-size: 14px;
+$dot-size-desktop: 16px;
+$anim-duration: 0.5s;
+$anim-duration-bit: $anim-duration / 2;
+$jump-size: 10px;
+
+@keyframes spinner {
+  0% {
+    opacity: 0.5;
+    bottom: $jump-size / 2 * -1;
+  }
+  100% {
+    opacity: 1;
+    bottom: $jump-size / 2;
+  }
+}
+
+@keyframes spinner-appear {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.spinner {
+  display: flex;
+  align-items: center;
+  height: $dot-size + $jump-size;
+  animation-name: spinner-appear;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+  animation-direction: alternate;
+
+  @media (min-width: $desktop) {
+    height: $dot-size-desktop + $jump-size;
+  }
+}
+
+.spinner__dot {
+  opacity: 0.5;
+  position: relative;
+  border-radius: 50%;
+  background-color: var(--color-bg-action);
+  width: $dot-size;
+  height: $dot-size;
+  animation-name: spinner;
+  animation-iteration-count: infinite;
+  animation-duration: $anim-duration;
+  animation-timing-function: ease;
+  animation-direction: alternate;
+  bottom: $jump-size / 2 * -1;
+
+  &:not(:last-child) {
+    margin-right: 4px;
+  }
+
+  @media (min-width: $desktop) {
+    width: $dot-size-desktop;
+    height: $dot-size-desktop;
+
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+}
+
+.spinner__dot-1 {
+  animation-delay: $anim-duration-bit * 1;
+}
+.spinner__dot-2 {
+  animation-delay: $anim-duration-bit * 2;
+}
+.spinner__dot-3 {
+  animation-delay: $anim-duration-bit * 3;
+}
