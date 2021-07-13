@@ -28,14 +28,16 @@ const startAgent = () => {
     console.log(`Agent started on port ${bold(`${cfg.AGENT_PORT}`)}`)
 
     try {
+      const agentReqBody: AgentRegisterRequestBody = {
+        host: `${cfg.AGENT_HOST}`,
+        port: `${cfg.AGENT_PORT}`,
+      }
+
       const { data } = await retry(
         () => {
           return axios.post<AgentRegisterResponseBody>(
             `http://${cfg.SERVER_HOST}:${cfg.SERVER_PORT}${cfg.agentRegisterPath}`,
-            {
-              host: `${cfg.AGENT_HOST}`,
-              port: `${cfg.AGENT_PORT}`,
-            } as AgentRegisterRequestBody,
+            agentReqBody,
             {
               timeout: 5000,
             }

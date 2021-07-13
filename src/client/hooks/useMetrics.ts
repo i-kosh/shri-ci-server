@@ -30,7 +30,7 @@ const useTimeSpendMetric = () => {
   }, [pathname])
 }
 
-export const useMetrics = () => {
+export const useMetrics = (): { onSpinnerHide: () => void } => {
   useTimeSpendMetric()
   const isSoinnerHideReported = useRef(false)
 

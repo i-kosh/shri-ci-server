@@ -42,7 +42,7 @@ export const SettingsPage: FunctionComponent = () => {
       minutes: settings.minutes,
     },
     validate: (values) => {
-      const errors = {} as Partial<typeof values>
+      const errors: Partial<typeof values> = {}
 
       if (!values.repo) {
         errors.repo = 'Required'

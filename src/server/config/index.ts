@@ -1,6 +1,19 @@
 import { config } from 'dotenv'
-import { Config } from './types'
 import validateConfig from '../utils/validateConfig'
+
+export interface Config {
+  NODE_ENV: 'production' | 'development' | string
+  PORT: string
+  TOKEN: string
+  DB: string
+  isDev: boolean
+  isProd: boolean
+  isDocker: boolean
+  /** Размер интервала в минутах */
+  AGENTS_REPORT_RATE: number
+  /** Размер интервала в минутах */
+  BUILDS_POLLING_RATE: number
+}
 
 if (process.env.DOCKER) {
   console.info('🐳 Running in docker')

@@ -12,6 +12,7 @@ interface CookiesExtended extends Partial<Record<CookiesNames, string>> {
 }
 
 export const extractCookies = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   req: Request<any, any, any, any>
 ): CookiesExtended => {
   return {

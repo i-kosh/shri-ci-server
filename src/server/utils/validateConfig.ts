@@ -1,4 +1,4 @@
-import { Config } from '../config/types'
+import { Config } from '../config'
 
 export default function (cfg: Config): void {
   try {

@@ -1,11 +1,13 @@
 import type { MetricsResponse } from '../types'
 import { isDateBetween } from '../../utils/isDateBetween'
 
+type FnReturn = { name: string; value: number; percent: number }[]
+
 export const userAgentByPeriod = (
   data: MetricsResponse[],
   dateFrom: string,
   dateTo?: string
-) => {
+): FnReturn => {
   const map = new Map<
     string,
     {
@@ -34,7 +36,7 @@ export const userAgentByPeriod = (
     })
   })
 
-  return Array.from(map).reduce((accum: any, val) => {
+  return Array.from(map).reduce((accum: FnReturn, val) => {
     accum.push({
       name: val[0],
       value: val[1].value,

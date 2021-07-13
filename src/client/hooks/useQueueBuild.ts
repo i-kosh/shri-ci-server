@@ -4,7 +4,10 @@ import { extractError } from '../utils/extractError'
 import { ToastsContext } from '../components/ToastBox'
 import { useHistory } from 'react-router-dom'
 
-export const useQueueBuild = () => {
+export const useQueueBuild = (): {
+  isLoading: boolean
+  queueNewBuild: ReturnType<typeof useQueueBuildMutation>[0]
+} => {
   const [trigger, { data, error, isError, isLoading }] = useQueueBuildMutation()
   const toastCtx = useContext(ToastsContext)
   const history = useHistory()
