@@ -17,8 +17,8 @@ const createStubResponse = (docCount: number): BuildListResponse => {
       configurationId: 'configurationId',
       id: 'test-build-id',
       status: 'Success',
-      duration: 1000 * 60 * 30, // 30min
-      start: new Date(0).toUTCString(),
+      duration: 60 * 30, // 30min
+      start: new Date(0).toISOString().replace('Z', ''),
     })
   }
 
