@@ -45,9 +45,9 @@ export class AgentsQueue {
     const checkInterval = 1000 * 10 // 10s
 
     setInterval(() => {
-      // Проверяем все зарегестрированные агенты и если агент не
+      // Проверяем все зарегистрированные агенты и если агент не
       // отчитывался за текущий период то извлекаем его из всех
-      // доступных очередей и помещяем в очередь для "больных"
+      // доступных очередей и помещаем в очередь для "больных"
       this.registeredAgents.forEach((agent) => {
         const fromLastCheck = Date.now() - agent.lastHealthTimestamp
 
@@ -121,10 +121,10 @@ export class AgentsQueue {
       return
     }
 
-    const isAgnetAlreadyFree =
+    const isAgentAlreadyFree =
       this.freeAgentsPool.findIndex((val) => val.id === agent.id) > -1
 
-    if (!isAgnetAlreadyFree) {
+    if (!isAgentAlreadyFree) {
       agent.onKilled = []
 
       const agentRequest = this.agentsRequestsPool.shift()
@@ -203,10 +203,10 @@ export class AgentsQueue {
       )
     }
 
-    const frstAgent = this.freeAgentsPool.shift()
-    if (frstAgent) {
+    const firstAgent = this.freeAgentsPool.shift()
+    if (firstAgent) {
       this.reportStat()
-      return frstAgent
+      return firstAgent
     }
 
     return new Promise((resolve) => {

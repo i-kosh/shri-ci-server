@@ -93,7 +93,7 @@ export class BuildsQueue {
           .catch(() => {
             // Агент по какой-то причине не принял команду
             console.error(
-              `Agent ${agent.id} not responsed or responsed with error`
+              `Agent ${agent.id} not responded or responded with error`
             )
 
             // Ретраим
