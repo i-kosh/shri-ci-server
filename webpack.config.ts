@@ -130,7 +130,7 @@ const serverCommonConfig: Configuration = {
   resolve: {
     extensions: ['.ts', '.js'],
   },
-  devtool: 'inline-source-map',
+  devtool: isDev ? 'inline-source-map' : false,
   output: {
     filename: 'server/[name].js',
     path: dist,
