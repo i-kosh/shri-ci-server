@@ -28,7 +28,7 @@ function startServer() {
   console.info(`🚀 Starting server...`)
   app.listen(cfg.PORT, () => {
     new BuildsQueue().start()
-    console.info(`✔  Server started on port ${cfg.PORT}...`)
+    console.info(`✔  Server started http://localhost:${cfg.PORT}`)
   })
 }
 startServer()
