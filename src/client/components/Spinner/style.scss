@@ -1,19 +1,20 @@
+@use "sass:math";
 @import '../../scss/variables.scss';
 
 $dot-size: 14px;
 $dot-size-desktop: 16px;
 $anim-duration: 0.5s;
-$anim-duration-bit: $anim-duration / 2;
+$anim-duration-bit: math.div($anim-duration, 2);
 $jump-size: 10px;
 
 @keyframes spinner {
   0% {
     opacity: 0.5;
-    bottom: $jump-size / 2 * -1;
+    bottom: math.div($jump-size, 2) * -1;
   }
   100% {
     opacity: 1;
-    bottom: $jump-size / 2;
+    bottom: math.div($jump-size, 2);
   }
 }
 
@@ -53,7 +54,7 @@ $jump-size: 10px;
   animation-duration: $anim-duration;
   animation-timing-function: ease;
   animation-direction: alternate;
-  bottom: $jump-size / 2 * -1;
+  bottom: math.div($jump-size, 2) * -1;
 
   &:not(:last-child) {
     margin-right: 4px;
