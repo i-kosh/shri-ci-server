@@ -8,6 +8,7 @@ import {
 } from './middlewares'
 import { resolve } from 'path'
 import { BuildsQueue } from './BuildsQueue'
+import { yellow } from 'colors'
 
 const pathToStatic = cfg.isDev
   ? resolve(__dirname, '../../dist/static')
@@ -28,7 +29,9 @@ function startServer() {
   console.info(`🚀 Starting server...`)
   app.listen(cfg.PORT, () => {
     new BuildsQueue().start()
-    console.info(`✔  Server started http://localhost:${cfg.PORT}`)
+    console.info(
+      `✔  Server started on ${yellow(`http://localhost:${cfg.PORT}`)}`
+    )
   })
 }
 startServer()
