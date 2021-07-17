@@ -32,12 +32,12 @@ const useTimeSpendMetric = () => {
 
 export const useMetrics = (): { onSpinnerHide: () => void } => {
   useTimeSpendMetric()
-  const isSoinnerHideReported = useRef(false)
+  const isSpinnerHideReported = useRef(false)
 
   return {
     onSpinnerHide: () => {
-      if (!isSoinnerHideReported.current) {
-        isSoinnerHideReported.current = true
+      if (!isSpinnerHideReported.current) {
+        isSpinnerHideReported.current = true
         initial?.send(
           'spinnerHide',
           Date.now() - performance.timing.connectStart

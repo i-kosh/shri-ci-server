@@ -12,7 +12,7 @@ import { promisify } from 'util'
 import { green, bold } from 'colors'
 import { logError } from './utils'
 
-const execFyleAsync = promisify(execFile)
+const execFileAsync = promisify(execFile)
 
 interface RunArgs {
   buildID: string
@@ -48,7 +48,7 @@ export class Runner {
       {
         suppressError: true,
         label: `Reporting build id:${bold(data.id)}`,
-        maxRetrys: 10,
+        maxRetries: 10,
       }
     ).catch((err) => {
       logError(err)
@@ -84,7 +84,7 @@ export class Runner {
       const repo = simpleGit({ baseDir: repoPath })
       console.log(`Cloning repo to ${bold(repoPath)}`)
       await repo.clone(link, repoPath)
-      console.log(`Chekout to ${bold(hash)}`)
+      console.log(`Checkout to ${bold(hash)}`)
       await repo.checkout(hash)
     } catch (error) {
       await this.remove(repoPath)
@@ -102,7 +102,7 @@ export class Runner {
       )
 
       console.log(`Run build command: ${bold(params.command)}`)
-      const { stderr, stdout } = await execFyleAsync(params.command, {
+      const { stderr, stdout } = await execFileAsync(params.command, {
         cwd: repoPath,
         shell: true,
         env: {

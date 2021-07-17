@@ -5,7 +5,7 @@ interface AdditionalCfg {
   addTimeout?: number
   numberOfRetry?: number
   label?: string
-  maxRetrys?: number
+  maxRetries?: number
   suppressError?: boolean
   timeoutCoef?: number
 }
@@ -18,7 +18,7 @@ export const retry = async <T>(
   const conf: Required<AdditionalCfg> = {
     addTimeout: addCfg?.addTimeout || 500,
     numberOfRetry: addCfg?.numberOfRetry || 0,
-    maxRetrys: addCfg?.maxRetrys || 10,
+    maxRetries: addCfg?.maxRetries || 10,
     label: addCfg?.label || '',
     suppressError: addCfg?.suppressError || false,
     timeoutCoef: 1.5,
@@ -28,7 +28,7 @@ export const retry = async <T>(
     console.log(
       conf.numberOfRetry >= 1
         ? `${conf.label} ${yellow(
-            `(retry ${conf.numberOfRetry} of ${conf.maxRetrys}, ${conf.addTimeout} ms)`
+            `(retry ${conf.numberOfRetry} of ${conf.maxRetries}, ${conf.addTimeout} ms)`
           )}`
         : conf.label
     )
@@ -37,7 +37,7 @@ export const retry = async <T>(
   try {
     return await fn()
   } catch (error) {
-    if (conf.numberOfRetry >= conf.maxRetrys) {
+    if (conf.numberOfRetry >= conf.maxRetries) {
       return Promise.reject(error)
     } else {
       if (!conf.suppressError) {

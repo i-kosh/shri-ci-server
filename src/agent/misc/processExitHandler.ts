@@ -7,9 +7,9 @@ import type {
 import { red, underline } from 'colors'
 import { logError } from '../utils'
 
-let itWasUnregisteredAlreqdy = false
+let itWasUnregisteredAlready = false
 const unregisterSelf = async (agentID: string, error: string) => {
-  if (!itWasUnregisteredAlreqdy) {
+  if (!itWasUnregisteredAlready) {
     try {
       console.log(red('Unregistering self...'))
       const data: AgentUnregisterRequestBody = {
@@ -24,7 +24,7 @@ const unregisterSelf = async (agentID: string, error: string) => {
         }
       )
 
-      itWasUnregisteredAlreqdy = true
+      itWasUnregisteredAlready = true
       console.log(red('Done, now closing...'))
     } catch (error) {
       logError(error)

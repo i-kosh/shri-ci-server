@@ -16,7 +16,7 @@ export const DefaultLayout: FunctionComponent<DefaultLayoutProps> = ({
   title,
   addButtons,
 }) => {
-  const headerTitle = title || 'Scool CI Server'
+  const headerTitle = title || 'School CI Server'
 
   const titleClasses = classNames({
     'page__header-title': true,

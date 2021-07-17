@@ -21,6 +21,6 @@ export const extractError = (err: Error): ExtractedError => {
 
   return {
     status: 400,
-    message: 'Error occured',
+    message: 'Error occurred',
   }
 }

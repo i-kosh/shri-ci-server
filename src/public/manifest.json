@@ -1,6 +1,6 @@
 {
-  "short_name": "Scool CI server",
-  "name": "Scool CI server",
+  "short_name": "School CI server",
+  "name": "School CI server",
   "icons": [
     {
       "src": "/static/favicon.ico",
