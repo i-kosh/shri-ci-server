@@ -1,4 +1,4 @@
-# shri-ci-server
+# shri-ci-server [![Node.js CI](https://github.com/i-kosh/shri-ci-server/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/i-kosh/shri-ci-server/actions/workflows/node.js.yml)
 
 > Для запуска сборки и сервера требуется **nodejs 14** и выше
 
