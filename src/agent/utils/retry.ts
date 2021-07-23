@@ -9,7 +9,7 @@ interface AdditionalCfg {
   suppressError?: boolean
   timeoutCoef?: number
 }
-type AsyncFunc<T = unknown> = (...args: unknown[]) => Promise<T>
+type AsyncFunc<T = unknown> = () => Promise<T>
 
 export const retry = async <T>(
   fn: AsyncFunc<T>,

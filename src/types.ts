@@ -1,5 +1,7 @@
 import type { QueueBuild } from './server/models/types'
 
+export type BuildID = string
+
 // GetBuild
 export type BuildStatus =
   | 'Success'
@@ -7,8 +9,17 @@ export type BuildStatus =
   | 'InProgress'
   | 'Canceled'
   | 'Fail'
+
+interface WithStart {
+  start: string
+}
+
+interface WithDuration extends WithStart {
+  duration: number
+}
+
 export interface Build {
-  id: string
+  id: BuildID
   configurationId: string
   buildNumber: number
   commitMessage: string
@@ -16,46 +27,20 @@ export interface Build {
   branchName: string
   authorName: string
   status: BuildStatus
-  start: string
-  duration: number
 }
-export type BuildWaitingOrCanceled = Pick<
-  Build,
-  | 'id'
-  | 'configurationId'
-  | 'authorName'
-  | 'branchName'
-  | 'buildNumber'
-  | 'commitHash'
-  | 'commitMessage'
-  | 'status'
-> & {
-  status: 'Waiting' | 'Canceled'
-}
-export type BuildWaiting = BuildWaitingOrCanceled & {
+export interface BuildWaiting extends Build {
   status: 'Waiting'
 }
-export type BuildCanceled = BuildWaitingOrCanceled & {
+export interface BuildCanceled extends Build {
   status: 'Canceled'
 }
-export type BuildInProgress = Pick<
-  Build,
-  | 'id'
-  | 'configurationId'
-  | 'authorName'
-  | 'branchName'
-  | 'buildNumber'
-  | 'commitHash'
-  | 'commitMessage'
-  | 'status'
-  | 'start'
-> & {
+export interface BuildInProgress extends Build, WithStart {
   status: 'InProgress'
 }
-export type BuildSuccess = Build & {
+export interface BuildSuccess extends Build, WithDuration {
   status: 'Success'
 }
-export type BuildFail = Build & {
+export interface BuildFail extends Build, WithDuration {
   status: 'Fail'
 }
 export type BuildConcatenated =
@@ -64,10 +49,9 @@ export type BuildConcatenated =
   | BuildInProgress
   | BuildSuccess
   | BuildFail
-export type BuildID = string
 export type BuildResponse = BuildConcatenated
 export interface BuildParams {
-  buildId?: string
+  buildId?: BuildID
 }
 
 // QueueBuild
@@ -84,7 +68,7 @@ export type BuildListResponse = BuildConcatenated[]
 // BUildLog
 export type LogResponse = string
 export interface LogParams {
-  buildId?: string
+  buildId?: BuildID
 }
 
 // Settings Save

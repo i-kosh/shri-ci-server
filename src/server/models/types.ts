@@ -3,6 +3,12 @@ import type { BuildResponse, BuildStatus, SettingsResponse } from '../../types'
 export type UUID = string
 export type ISODate = string
 
+interface HasBuildIDParam {
+  params: {
+    buildId: UUID
+  }
+}
+
 export interface DBresponse<T = unknown> {
   data: T
   errors?: Array<unknown>
@@ -19,16 +25,8 @@ export type GetBuildListConfig = DBReqConfig & {
     limit?: number
   }
 }
-export type GetBuildLogConfig = DBReqConfig & {
-  params: {
-    buildId: string
-  }
-}
-export type GetBuildDetailsConfig = DBReqConfig & {
-  params: {
-    buildId: string
-  }
-}
+export type GetBuildLogConfig = DBReqConfig & HasBuildIDParam
+export type GetBuildDetailsConfig = DBReqConfig & HasBuildIDParam
 export type QueueBuildConfig = DBReqConfig & {
   data: {
     authorName: string
