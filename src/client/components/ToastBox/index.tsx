@@ -1,10 +1,10 @@
 import React, {
-  FC,
   createContext,
-  useState,
+  FC,
   ReactNode,
   useEffect,
   useRef,
+  useState,
 } from 'react'
 import { createPortal } from 'react-dom'
 import { v4 as uuid } from 'uuid'
@@ -49,15 +49,14 @@ export const ToastDock: FC = ({ children }) => {
 
     updCtx({
       add: (time, toast) => {
-        const toastClone = { ...toast }
-        if (!toastClone.key) toastClone.key = uuid()
-        const key = toastClone.key
-        const toastWithKey = toastClone as ToastWithKey
+        const toastWithKey = { ...toast, key: toast.key ?? uuid() }
 
         setDockList(dockList.concat(toastWithKey))
 
         setTimeout(() => {
-          setDockList(ref.current?.filter((val) => val.key !== key))
+          setDockList(
+            ref.current?.filter((val) => val.key !== toastWithKey.key)
+          )
         }, time)
       },
     })

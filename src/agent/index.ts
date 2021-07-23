@@ -1,18 +1,17 @@
-import './types'
-import { registerExitHandlers } from './misc/processExitHandler'
-import express from 'express'
-import buildHandler from './controllers/buildHandler'
 import axios from 'axios'
-import cfg from './config'
+import { bold, green } from 'colors'
+import cors from 'cors'
+import express from 'express'
+import morgan from 'morgan'
 import type {
   AgentRegisterRequestBody,
   AgentRegisterResponseBody,
 } from '../types'
-import { green, bold } from 'colors'
-import { retry, logError } from './utils'
-import cors from 'cors'
-import morgan from 'morgan'
+import cfg from './config'
+import buildHandler from './controllers/buildHandler'
 import { healthCheckReporter } from './misc/healthCheckReporter'
+import { registerExitHandlers } from './misc/processExitHandler'
+import { logError, retry } from './utils'
 
 const agent = express()
 agent.use(cors())

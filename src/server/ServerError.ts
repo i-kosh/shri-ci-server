@@ -6,11 +6,7 @@ export interface ServerErrorArgs {
 }
 
 const isServerErrorArgs = (val: unknown): val is ServerErrorArgs => {
-  if (val instanceof Object) {
-    return 'status' in val && 'message' in val
-  }
-
-  return false
+  return val instanceof Object && 'status' in val && 'message' in val
 }
 
 export class ServerError extends Error {

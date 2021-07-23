@@ -1,8 +1,8 @@
+import { blue, cyan } from 'colors'
 import { RequestHandler } from 'express'
-import { getReqId } from '../utils/getSetReqId'
 import { bytesToMB } from '../utils/bytesToMB'
 import { extractCookies } from '../utils/extractCookies'
-import { cyan, blue } from 'colors'
+import { getReqId } from '../utils/getSetReqId'
 
 interface Cached {
   expires: number
@@ -29,9 +29,9 @@ export function addCache(target: RequestHandler, cfg?: Params): RequestHandler {
   }
 
   let memSize = 0
-  const mem: Map<reqKey, Cached> = new Map()
+  const mem = new Map<reqKey, Cached>()
 
-  const memSet = (key: string, val: Cached) => {
+  const memSet = (key: reqKey, val: Cached) => {
     // TODO: сделать нормальное вытеснение из кеша
     if (bytesToMB(memSize) > cfgParams.cacheSizeMB) mem.clear()
     if (bytesToMB(val.sizeBytes) > cfgParams.itemMaxSizeMB) {
